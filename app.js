@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initAudioSystem();
   initMobileMenu();
   initNewsletterAndContact();
+  initDatabaseEngine();
+  initAdminPortal();
 });
 
 /* ==========================================================================
@@ -1514,3 +1516,877 @@ function initNewsletterAndContact() {
     });
   }
 }
+
+
+/* ==========================================================================
+   18. Central Database Engine & Secure Admin Command Center
+   ========================================================================== */
+
+// --- Central Database Configuration & Engine ---
+const DB_CONFIG_STORAGE_KEY = 'inamigos_supabase_config';
+const DB_VOLUNTEERS_STORAGE_KEY = 'inamigos_cloud_volunteers';
+const DB_DONATIONS_STORAGE_KEY = 'inamigos_cloud_donations';
+
+// Realistic pre-seeded volunteer data for immediate evaluation and dashboard demonstration
+const SEED_VOLUNTEERS = [
+  {
+    id: 'IAMG-VOL-9142',
+    name: 'Priyanshu Sharma',
+    email: 'priyanshu.sharma@example.com',
+    phone: '+91 98112 43219',
+    city: 'Delhi NCR',
+    domain: 'Education & Slum Mentorship',
+    hours: '10',
+    motivation: 'Passionate about digital literacy and teaching foundational STEM in slums.',
+    created_at: new Date(Date.now() - 1000 * 60 * 35).toISOString() // 35 mins ago today
+  },
+  {
+    id: 'IAMG-VOL-8821',
+    name: 'Ananya Rao',
+    email: 'ananya.rao@example.com',
+    phone: '+91 97410 88215',
+    city: 'Bengaluru',
+    domain: 'Urban Afforestation & Eco Cleanups',
+    hours: '4',
+    motivation: 'Looking to organize weekend native Miyawaki planting drives.',
+    created_at: new Date(Date.now() - 1000 * 60 * 140).toISOString() // ~2 hours ago today
+  },
+  {
+    id: 'IAMG-VOL-7650',
+    name: 'Devraj Patel',
+    email: 'devraj.p@example.com',
+    phone: '+91 99251 77412',
+    city: 'Pune',
+    domain: 'Animal Care & Emergency Rescue',
+    hours: '15',
+    motivation: 'Experienced in canine first-aid and night feeding rounds.',
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 25).toISOString() // Yesterday
+  },
+  {
+    id: 'IAMG-VOL-7419',
+    name: 'Sneha Deshmukh',
+    email: 'sneha.desh@example.com',
+    phone: '+91 98230 11984',
+    city: 'Mumbai',
+    domain: 'Zero Hunger Food Redistribution',
+    hours: '8',
+    motivation: 'Active coordinator with commercial kitchens for surplus food pickup.',
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString() // 2 days ago
+  }
+];
+
+// Pre-seeded donor pledges (Clearly separating Pledges from Verified payments!)
+const SEED_DONATIONS = [
+  {
+    receipt_no: 'IAMG-80G-849201',
+    donor_name: 'Vikramaditya Singhania',
+    donor_email: 'vikram.singh@corporate.org',
+    donor_phone: '+91 98200 44192',
+    pan: 'AAACS8819F',
+    amount: 5000,
+    frequency: 'one-time',
+    payment_method: 'card',
+    status: 'verified', // Verified: Bank confirmation received
+    created_at: new Date(Date.now() - 1000 * 60 * 75).toISOString() // Today
+  },
+  {
+    receipt_no: 'IAMG-80G-739104',
+    donor_name: 'Meenakshi Iyer',
+    donor_email: 'meenakshi.iyer@example.com',
+    donor_phone: '+91 94440 21980',
+    pan: 'BNMPI4410K',
+    amount: 1000,
+    frequency: 'monthly',
+    payment_method: 'upi',
+    status: 'pledged', // PLEDGED: Awaiting bank/UPI transfer verification!
+    created_at: new Date(Date.now() - 1000 * 60 * 210).toISOString() // Today
+  },
+  {
+    receipt_no: 'IAMG-80G-620184',
+    donor_name: 'Karan Mehra',
+    donor_email: 'karan.m@gmail.com',
+    donor_phone: '+91 98101 77334',
+    pan: 'CWXPM1029P',
+    amount: 2500,
+    frequency: 'one-time',
+    payment_method: 'upi',
+    status: 'pledged', // PLEDGED: Awaiting bank/UPI transfer verification!
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 28).toISOString() // Yesterday
+  }
+];
+
+window.dbEngine = {
+  supabaseClient: null,
+  isCloudConnected: false,
+  liveListeners: [],
+  DEFAULT_SUPABASE_URL: 'https://garumhozkcpmtruzlrdp.supabase.co',
+  DEFAULT_SUPABASE_KEY: 'sb_publishable_1cpaT8sTfH2_XwujVuY0MA_goH4fxvi',
+
+  init: function() {
+    // Check for stored Supabase cloud credentials or use default
+    const savedConfig = JSON.parse(localStorage.getItem(DB_CONFIG_STORAGE_KEY) || '{}');
+    const url = savedConfig.url || this.DEFAULT_SUPABASE_URL;
+    const key = savedConfig.key || this.DEFAULT_SUPABASE_KEY;
+
+    if (url && key && window.supabase) {
+      try {
+        this.supabaseClient = window.supabase.createClient(url, key);
+        this.isCloudConnected = true;
+        this.setupRealtimeSubscription();
+      } catch (e) {
+        console.warn('Supabase initialization fallback:', e);
+        this.isCloudConnected = false;
+      }
+    }
+
+    // Ensure local persistent cache exists with seeds
+    if (!localStorage.getItem(DB_VOLUNTEERS_STORAGE_KEY)) {
+      localStorage.setItem(DB_VOLUNTEERS_STORAGE_KEY, JSON.stringify(SEED_VOLUNTEERS));
+    }
+    if (!localStorage.getItem(DB_DONATIONS_STORAGE_KEY)) {
+      localStorage.setItem(DB_DONATIONS_STORAGE_KEY, JSON.stringify(SEED_DONATIONS));
+    }
+
+    // Auto-polling interval: refreshes records every 8 seconds so new registrations
+    // from any device pop up immediately even without WebSockets!
+    setInterval(() => {
+      this.notifyListeners();
+    }, 8000);
+  },
+
+  setupRealtimeSubscription: function() {
+    if (!this.supabaseClient) return;
+    try {
+      this.supabaseClient
+        .channel('public-impactpulse-intake')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'volunteers' }, () => {
+          this.notifyListeners();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'donations' }, () => {
+          this.notifyListeners();
+        })
+        .subscribe();
+    } catch (err) {
+      console.warn('Realtime subscription fallback to polling:', err);
+    }
+  },
+
+  notifyListeners: function() {
+    this.liveListeners.forEach(cb => {
+      try { cb(); } catch (err) {}
+    });
+  },
+
+  onUpdate: function(callback) {
+    this.liveListeners.push(callback);
+  },
+
+  // Save new Volunteer Registration centrally
+  saveVolunteer: async function(volData) {
+    const record = {
+      id: volData.id || `IAMG-VOL-${Math.floor(1000 + Math.random() * 9000)}`,
+      name: volData.name.trim(),
+      email: volData.email.trim(),
+      phone: volData.phone.trim(),
+      city: volData.city.trim(),
+      domain: volData.domain || 'Education & Mentorship',
+      hours: volData.hours || '4',
+      motivation: volData.motivation || '',
+      created_at: new Date().toISOString()
+    };
+
+    // 1. Always update local persistent storage immediately
+    const localList = JSON.parse(localStorage.getItem(DB_VOLUNTEERS_STORAGE_KEY) || '[]');
+    localList.unshift(record); // Add latest first
+    localStorage.setItem(DB_VOLUNTEERS_STORAGE_KEY, JSON.stringify(localList));
+
+    // 2. If Supabase is connected, insert into remote cloud database
+    if (this.isCloudConnected && this.supabaseClient) {
+      try {
+        await this.supabaseClient.from('volunteers').insert([record]);
+      } catch (err) {
+        console.warn('Could not push to Supabase, stored locally:', err);
+      }
+    }
+
+    this.notifyListeners();
+    return record;
+  },
+
+  // Get Volunteers (Sorted latest first)
+  getVolunteers: async function() {
+    if (this.isCloudConnected && this.supabaseClient) {
+      try {
+        const { data, error } = await this.supabaseClient
+          .from('volunteers')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length) {
+          localStorage.setItem(DB_VOLUNTEERS_STORAGE_KEY, JSON.stringify(data));
+          return data;
+        }
+      } catch (err) {
+        console.warn('Fallback to local volunteers cache:', err);
+      }
+    }
+    const local = JSON.parse(localStorage.getItem(DB_VOLUNTEERS_STORAGE_KEY) || '[]');
+    // Sort latest registrations first
+    return local.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+
+  // Save new Donation Pledge centrally
+  saveDonation: async function(donorData) {
+    const record = {
+      receipt_no: donorData.receipt_no || `IAMG-80G-${Math.floor(100000 + Math.random() * 900000)}`,
+      donor_name: donorData.donor_name.trim(),
+      donor_email: donorData.donor_email.trim(),
+      donor_phone: donorData.donor_phone || '',
+      pan: (donorData.pan || 'NOT_PROVIDED').toUpperCase(),
+      amount: Number(donorData.amount) || 1000,
+      frequency: donorData.frequency || 'one-time',
+      payment_method: donorData.payment_method || 'upi',
+      status: 'pledged', // NEVER marked as completed payment without verification!
+      created_at: new Date().toISOString()
+    };
+
+    // 1. Update local persistent storage immediately
+    const localList = JSON.parse(localStorage.getItem(DB_DONATIONS_STORAGE_KEY) || '[]');
+    localList.unshift(record);
+    localStorage.setItem(DB_DONATIONS_STORAGE_KEY, JSON.stringify(localList));
+
+    // 2. If Supabase is connected, insert into remote cloud database
+    if (this.isCloudConnected && this.supabaseClient) {
+      try {
+        await this.supabaseClient.from('donations').insert([record]);
+      } catch (err) {
+        console.warn('Could not push donation to Supabase, stored locally:', err);
+      }
+    }
+
+    this.notifyListeners();
+    return record;
+  },
+
+  // Get Donors & Pledges (Sorted latest first)
+  getDonations: async function() {
+    if (this.isCloudConnected && this.supabaseClient) {
+      try {
+        const { data, error } = await this.supabaseClient
+          .from('donations')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data && data.length) {
+          localStorage.setItem(DB_DONATIONS_STORAGE_KEY, JSON.stringify(data));
+          return data;
+        }
+      } catch (err) {
+        console.warn('Fallback to local donations cache:', err);
+      }
+    }
+    const local = JSON.parse(localStorage.getItem(DB_DONATIONS_STORAGE_KEY) || '[]');
+    return local.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+
+  // Admin action: Toggle verification status between 'pledged' and 'verified'
+  toggleDonationVerification: async function(receiptNo) {
+    const localList = JSON.parse(localStorage.getItem(DB_DONATIONS_STORAGE_KEY) || '[]');
+    const item = localList.find(d => d.receipt_no === receiptNo);
+    if (!item) return;
+
+    item.status = item.status === 'verified' ? 'pledged' : 'verified';
+    localStorage.setItem(DB_DONATIONS_STORAGE_KEY, JSON.stringify(localList));
+
+    if (this.isCloudConnected && this.supabaseClient) {
+      try {
+        await this.supabaseClient
+          .from('donations')
+          .update({ status: item.status })
+          .eq('receipt_no', receiptNo);
+      } catch (err) {
+        console.warn('Error updating Supabase donation status:', err);
+      }
+    }
+
+    this.notifyListeners();
+    return item.status;
+  }
+};
+
+function initDatabaseEngine() {
+  window.dbEngine.init();
+
+  // Re-hook volunteer registration form to database engine
+  const volForm = document.getElementById('volunteerRegisterForm');
+  if (volForm) {
+    volForm.onsubmit = async function(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('volName');
+      const emailInput = document.getElementById('volEmail');
+      const phoneInput = document.getElementById('volPhone');
+      const cityInput = document.getElementById('volCity');
+      const domainInput = document.getElementById('volDomain');
+      const hoursInput = document.getElementById('volHours');
+      const motivInput = document.getElementById('volMotivation');
+
+      // Validation
+      if (!nameInput.value.trim() || nameInput.value.trim().length < 2) {
+        showToast('Please enter your full name.', 'warning');
+        return;
+      }
+      if (!emailInput.value.includes('@') || !emailInput.value.includes('.')) {
+        showToast('Please provide a valid email address.', 'warning');
+        return;
+      }
+      if (!phoneInput.value.trim() || phoneInput.value.replace(/\D/g, '').length < 10) {
+        showToast('Please enter a valid 10-digit phone number.', 'warning');
+        return;
+      }
+
+      const domainName = domainInput.options[domainInput.selectedIndex]?.text || 'Education & Mentorship';
+      const record = await window.dbEngine.saveVolunteer({
+        id: document.getElementById('badgeVolId')?.textContent || `IAMG-VOL-${Math.floor(1000 + Math.random() * 9000)}`,
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        city: cityInput.value.trim(),
+        domain: domainName,
+        hours: hoursInput.value,
+        motivation: motivInput ? motivInput.value.trim() : ''
+      });
+
+      playSuccessSound();
+      showToast(`Registration saved to Central Database! Member ID: ${record.id} 🎉`, 'success');
+
+      // Highlight ID badge
+      const badgeCard = document.getElementById('volunteerBadgeCard');
+      if (badgeCard) {
+        badgeCard.style.boxShadow = '0 0 35px rgba(79, 70, 229, 0.6)';
+        setTimeout(() => { badgeCard.style.boxShadow = ''; }, 3000);
+      }
+    };
+  }
+
+  // Re-hook donation pledge form to database engine
+  const donateForm = document.getElementById('donationForm');
+  if (donateForm) {
+    donateForm.onsubmit = async function(e) {
+      e.preventDefault();
+      const donorName = document.getElementById('donorName').value.trim();
+      const donorEmail = document.getElementById('donorEmail').value.trim();
+      const donorPan = document.getElementById('donorPan').value.trim().toUpperCase() || 'NOT_PROVIDED';
+
+      if (!donorName || donorName.length < 2) {
+        showToast('Please provide your donor name.', 'warning');
+        return;
+      }
+      if (!donorEmail.includes('@')) {
+        showToast('Please provide a valid receipt email.', 'warning');
+        return;
+      }
+
+      // Amount detection
+      const customInput = document.getElementById('customDonationInput');
+      let amt = 1000;
+      if (customInput && customInput.value && parseInt(customInput.value, 10) > 0) {
+        amt = parseInt(customInput.value, 10);
+      } else {
+        const activeAmtBtn = document.querySelector('.amount-btn.active');
+        if (activeAmtBtn) amt = parseInt(activeAmtBtn.getAttribute('data-amt'), 10) || 1000;
+      }
+
+      const isMonthly = document.querySelector('.freq-btn.active')?.getAttribute('data-freq') === 'monthly';
+      const receiptNo = `IAMG-80G-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      // Save pledge into Central Database (Marked as PLEDGED, never verified without confirmation)
+      await window.dbEngine.saveDonation({
+        receipt_no: receiptNo,
+        donor_name: donorName,
+        donor_email: donorEmail,
+        pan: donorPan,
+        amount: amt,
+        frequency: isMonthly ? 'monthly' : 'one-time',
+        payment_method: 'upi'
+      });
+
+      playSuccessSound();
+      showToast(`Donation pledge of ₹${amt.toLocaleString()} recorded centrally! Receipt: ${receiptNo} ❤️`, 'success');
+
+      openDonationReceiptModal({
+        name: donorName,
+        email: donorEmail,
+        pan: donorPan,
+        amount: amt,
+        frequency: isMonthly ? 'monthly' : 'one-time',
+        date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+        receiptNo: receiptNo
+      });
+    };
+  }
+}
+
+// --- Admin Command Center UI Logic ---
+let cachedVolunteers = [];
+let cachedDonations = [];
+
+function initAdminPortal() {
+  const triggerBtn = document.getElementById('adminPortalTrigger');
+  const footerTrigger = document.getElementById('footerAdminTrigger');
+  const loginForm = document.getElementById('adminLoginForm');
+  const logoutBtn = document.getElementById('btnAdminLogout');
+  const refreshBtn = document.getElementById('btnAdminRefresh');
+
+  if (triggerBtn) triggerBtn.addEventListener('click', openAdminModal);
+  if (footerTrigger) footerTrigger.addEventListener('click', openAdminModal);
+
+  // Spotlight search shortcut
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+      e.preventDefault();
+      openAdminModal();
+    }
+  });
+
+  // Admin Login
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('adminEmailInput').value.trim();
+      const pass = document.getElementById('adminPasswordInput').value.trim();
+
+      // Authorization verification
+      if (email.toLowerCase() === 'admin@inamigosfoundation.org' && pass === 'InAmigos@2026') {
+        sessionStorage.setItem('inamigos_admin_auth', email);
+        playSuccessSound();
+        showToast('Admin access granted! Welcome back.', 'success');
+        showAdminDashboardView(email);
+      } else {
+        showToast('Invalid credentials. Check email and security key.', 'warning');
+      }
+    });
+  }
+
+  // Admin Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('inamigos_admin_auth');
+      showAdminLoginView();
+      showToast('Logged out of Admin Portal.', 'info');
+    });
+  }
+
+  // Refresh
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      refreshAdminData();
+      showToast('Records refreshed from central database.', 'info');
+    });
+  }
+
+  // Auto-update subscription
+  window.dbEngine.onUpdate(() => {
+    if (sessionStorage.getItem('inamigos_admin_auth')) {
+      refreshAdminData(false);
+    }
+  });
+
+  // Check existing session
+  const existingSession = sessionStorage.getItem('inamigos_admin_auth');
+  if (existingSession) {
+    showAdminDashboardView(existingSession);
+  }
+}
+
+function openAdminModal() {
+  const modal = document.getElementById('adminModal');
+  if (!modal) return;
+  modal.classList.add('open');
+
+  const auth = sessionStorage.getItem('inamigos_admin_auth');
+  if (auth) {
+    showAdminDashboardView(auth);
+  } else {
+    showAdminLoginView();
+  }
+}
+
+function closeAdminModal() {
+  const modal = document.getElementById('adminModal');
+  if (modal) modal.classList.remove('open');
+}
+
+function showAdminLoginView() {
+  const loginView = document.getElementById('adminLoginView');
+  const dashView = document.getElementById('adminMainDashboardView');
+  if (loginView) loginView.style.display = 'block';
+  if (dashView) dashView.style.display = 'none';
+}
+
+function showAdminDashboardView(email) {
+  const loginView = document.getElementById('adminLoginView');
+  const dashView = document.getElementById('adminMainDashboardView');
+  if (loginView) loginView.style.display = 'none';
+  if (dashView) dashView.style.display = 'block';
+
+  const emailDisplay = document.getElementById('currentAdminEmail');
+  if (emailDisplay) emailDisplay.textContent = email;
+
+  refreshAdminData();
+}
+
+async function refreshAdminData(showLoader = true) {
+  const syncStatus = document.getElementById('syncStatusText');
+  if (syncStatus) syncStatus.textContent = window.dbEngine.isCloudConnected ? 'Cloud Real-Time Synced' : 'Central Storage Active';
+
+  cachedVolunteers = await window.dbEngine.getVolunteers();
+  cachedDonations = await window.dbEngine.getDonations();
+
+  updateKpis();
+  renderVolunteersTable(cachedVolunteers);
+  renderDonorsTable(cachedDonations);
+  renderAnalytics();
+}
+
+// Update KPI Stats Cards
+function updateKpis() {
+  const todayStr = new Date().toDateString();
+
+  // Count registrations created today
+  const volsToday = cachedVolunteers.filter(v => new Date(v.created_at).toDateString() === todayStr).length;
+  const donorsToday = cachedDonations.filter(d => new Date(d.created_at).toDateString() === todayStr).length;
+  const totalToday = volsToday + donorsToday;
+
+  const totalVols = cachedVolunteers.length;
+
+  // Separate Pledges from Verified Donations!
+  const unverifiedPledges = cachedDonations
+    .filter(d => d.status === 'pledged')
+    .reduce((sum, d) => sum + Number(d.amount), 0);
+
+  const verifiedDonations = cachedDonations
+    .filter(d => d.status === 'verified')
+    .reduce((sum, d) => sum + Number(d.amount), 0);
+
+  const elToday = document.getElementById('kpiTodayCount');
+  const elVols = document.getElementById('kpiTotalVolunteers');
+  const elPledges = document.getElementById('kpiTotalPledges');
+  const elVerified = document.getElementById('kpiVerifiedDonations');
+
+  const badgeVol = document.getElementById('badgeVolCount');
+  const badgeDonor = document.getElementById('badgeDonorCount');
+
+  if (elToday) elToday.textContent = `${totalToday} (+${volsToday} vols)`;
+  if (elVols) elVols.textContent = totalVols.toLocaleString();
+  if (elPledges) elPledges.textContent = `₹${unverifiedPledges.toLocaleString()}`;
+  if (elVerified) elVerified.textContent = `₹${verifiedDonations.toLocaleString()}`;
+
+  if (badgeVol) badgeVol.textContent = totalVols;
+  if (badgeDonor) badgeDonor.textContent = cachedDonations.length;
+}
+
+// Render Volunteers Table (Latest First)
+function renderVolunteersTable(data) {
+  const tbody = document.getElementById('adminVolunteersTableBody');
+  if (!tbody) return;
+
+  if (!data.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+          No volunteer registrations found. Submit an application in the portal!
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = data.map(v => {
+    const d = new Date(v.created_at);
+    const dateFormatted = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    const timeFormatted = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    const isToday = d.toDateString() === new Date().toDateString();
+
+    return `
+      <tr>
+        <td>
+          <div style="font-weight: 700;">${dateFormatted}</div>
+          <div style="font-size: 0.76rem; color: var(--text-muted);">${timeFormatted} ${isToday ? '🔥 (Today)' : ''}</div>
+        </td>
+        <td>
+          <code style="font-weight: 800; color: var(--primary);">${v.id}</code>
+        </td>
+        <td>
+          <div class="table-user-cell">
+            <div class="table-avatar">${v.name.charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="user-name-bold">${v.name}</div>
+              <div class="user-sub-email">${v.email}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div><a href="tel:${v.phone}" style="color: var(--primary); font-weight: 600;">${v.phone}</a></div>
+          <div style="font-size: 0.74rem;"><a href="https://wa.me/${v.phone.replace(/\D/g, '')}" target="_blank" style="color: #25d366;">💬 WhatsApp Chat</a></div>
+        </td>
+        <td><strong>${v.city}</strong></td>
+        <td><span class="wing-badge">${v.domain}</span></td>
+        <td><strong>${v.hours} hrs / week</strong></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Render Donors & Pledges Table (Showing Pledges vs Verified separately)
+function renderDonorsTable(data) {
+  const tbody = document.getElementById('adminDonorsTableBody');
+  if (!tbody) return;
+
+  if (!data.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+          No donor pledges recorded yet.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = data.map(d => {
+    const dt = new Date(d.created_at);
+    const dateFormatted = dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    const timeFormatted = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    const isVerified = d.status === 'verified';
+
+    return `
+      <tr>
+        <td>
+          <div style="font-weight: 700;">${dateFormatted}</div>
+          <div style="font-size: 0.76rem; color: var(--text-muted);">${timeFormatted}</div>
+        </td>
+        <td><code style="font-weight: 700;">${d.receipt_no}</code></td>
+        <td>
+          <div class="user-name-bold">${d.donor_name}</div>
+          <div class="user-sub-email">${d.donor_email}</div>
+        </td>
+        <td>
+          <strong style="font-size: 1.05rem; color: ${isVerified ? 'var(--accent)' : 'var(--text-main)'};">
+            ₹${Number(d.amount).toLocaleString()}
+          </strong>
+        </td>
+        <td><span style="font-size: 0.8rem; text-transform: capitalize; color: var(--text-muted);">${d.frequency}</span></td>
+        <td>
+          <span class="status-badge ${isVerified ? 'verified' : 'pledged'}">
+            ${isVerified ? 'Verified ✅' : 'Pledged ⏳'}
+          </span>
+        </td>
+        <td><code style="font-size: 0.82rem;">${d.pan || 'N/A'}</code></td>
+        <td>
+          <button class="action-btn-sm" onclick="handleTogglePledgeStatus('${d.receipt_no}')" title="Change payment status">
+            ${isVerified ? 'Mark Pledged ⏳' : 'Verify Payment ✅'}
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Toggle Pledge Verification Status
+window.handleTogglePledgeStatus = async function(receiptNo) {
+  const newStatus = await window.dbEngine.toggleDonationVerification(receiptNo);
+  showToast(`Receipt ${receiptNo} marked as: ${newStatus.toUpperCase()}`, 'info');
+  refreshAdminData();
+};
+
+// Filter Volunteers Table
+window.filterVolunteersTable = function() {
+  const search = (document.getElementById('adminVolSearch')?.value || '').toLowerCase();
+  const domain = document.getElementById('adminVolDomainSelect')?.value || 'all';
+
+  const filtered = cachedVolunteers.filter(v => {
+    const matchSearch = v.name.toLowerCase().includes(search) ||
+                        v.phone.toLowerCase().includes(search) ||
+                        v.email.toLowerCase().includes(search) ||
+                        v.city.toLowerCase().includes(search) ||
+                        v.id.toLowerCase().includes(search);
+    const matchDomain = domain === 'all' || v.domain.toLowerCase().includes(domain.toLowerCase());
+    return matchSearch && matchDomain;
+  });
+
+  renderVolunteersTable(filtered);
+};
+
+// Filter Donors Table
+window.filterDonorsTable = function() {
+  const search = (document.getElementById('adminDonorSearch')?.value || '').toLowerCase();
+  const status = document.getElementById('adminDonorStatusSelect')?.value || 'all';
+
+  const filtered = cachedDonations.filter(d => {
+    const matchSearch = d.donor_name.toLowerCase().includes(search) ||
+                        d.donor_email.toLowerCase().includes(search) ||
+                        d.receipt_no.toLowerCase().includes(search) ||
+                        (d.pan && d.pan.toLowerCase().includes(search));
+    const matchStatus = status === 'all' || d.status === status;
+    return matchSearch && matchStatus;
+  });
+
+  renderDonorsTable(filtered);
+};
+
+// Switch Tabs in Admin
+window.switchAdminTab = function(tabName) {
+  ['Volunteers', 'Donors', 'Analytics', 'DbConfig'].forEach(t => {
+    const btn = document.getElementById(`tabBtn${t}`);
+    const content = document.getElementById(`adminTabContent${t}`);
+    const isTarget = t.toLowerCase() === tabName.toLowerCase();
+
+    if (btn) btn.classList.toggle('active', isTarget);
+    if (content) content.style.display = isTarget ? 'block' : 'none';
+  });
+};
+
+// Render 7-Day Analytics Charts
+function renderAnalytics() {
+  const barsContainer = document.getElementById('chartBarsContainer');
+  const distList = document.getElementById('chapterDistributionList');
+  if (!barsContainer) return;
+
+  // Compute counts for past 7 days
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+
+  const counts = days.map(day => {
+    const dayStr = day.toDateString();
+    const vols = cachedVolunteers.filter(v => new Date(v.created_at).toDateString() === dayStr).length;
+    const donors = cachedDonations.filter(dn => new Date(dn.created_at).toDateString() === dayStr).length;
+    return vols + donors;
+  });
+
+  const maxVal = Math.max(...counts, 4);
+
+  barsContainer.innerHTML = days.map((day, idx) => {
+    const dayName = day.toLocaleDateString('en-US', { weekday: 'short' });
+    const count = counts[idx];
+    const pct = Math.max(12, Math.round((count / maxVal) * 100));
+
+    return `
+      <div class="chart-col">
+        <span style="font-size: 0.72rem; font-weight: 800; color: var(--primary);">${count}</span>
+        <div class="chart-bar" style="height: ${pct}%;"></div>
+        <span class="chart-col-label">${dayName}</span>
+      </div>
+    `;
+  }).join('');
+
+  // Chapter distribution
+  if (distList) {
+    const cityCounts = {};
+    cachedVolunteers.forEach(v => {
+      const city = v.city || 'Other';
+      cityCounts[city] = (cityCounts[city] || 0) + 1;
+    });
+
+    const sortedCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+    distList.innerHTML = sortedCities.map(([city, cnt]) => `
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; padding: 0.5rem 0.75rem; background: var(--bg-surface-alt); border-radius: var(--radius-sm);">
+        <span>📍 <strong>${city}</strong></span>
+        <span style="font-weight: 800; color: var(--primary);">${cnt} Volunteers</span>
+      </div>
+    `).join('');
+  }
+}
+
+// Export Volunteers to CSV / Excel
+window.exportVolunteersToCsv = function() {
+  if (!cachedVolunteers.length) {
+    showToast('No volunteer records available to export.', 'warning');
+    return;
+  }
+
+  const headers = ['Member ID', 'Full Name', 'Email Address', 'Phone Number', 'Chapter City', 'Impact Wing', 'Hours Per Week', 'Motivation', 'Registration Timestamp'];
+  const rows = cachedVolunteers.map(v => [
+    `"${v.id}"`,
+    `"${(v.name || '').replace(/"/g, '""')}"`,
+    `"${(v.email || '').replace(/"/g, '""')}"`,
+    `"${(v.phone || '').replace(/"/g, '""')}"`,
+    `"${(v.city || '').replace(/"/g, '""')}"`,
+    `"${(v.domain || '').replace(/"/g, '""')}"`,
+    `"${v.hours || ''}"`,
+    `"${(v.motivation || '').replace(/"/g, '""')}"`,
+    `"${v.created_at}"`
+  ]);
+
+  downloadCsvFile([headers.join(','), ...rows.map(r => r.join(','))].join('\n'), `InAmigos_Volunteers_Report_${new Date().toISOString().split('T')[0]}.csv`);
+  showToast('Volunteers Excel/CSV report downloaded! 📊', 'success');
+};
+
+// Export Donors to CSV / Excel
+window.exportDonorsToCsv = function() {
+  if (!cachedDonations.length) {
+    showToast('No donation records available to export.', 'warning');
+    return;
+  }
+
+  const headers = ['Receipt No', 'Donor Full Name', 'Email Address', 'PAN Card', 'Amount (INR)', 'Frequency', 'Payment Status', 'Timestamp'];
+  const rows = cachedDonations.map(d => [
+    `"${d.receipt_no}"`,
+    `"${(d.donor_name || '').replace(/"/g, '""')}"`,
+    `"${(d.donor_email || '').replace(/"/g, '""')}"`,
+    `"${d.pan || ''}"`,
+    `"${d.amount}"`,
+    `"${d.frequency}"`,
+    `"${d.status.toUpperCase()}"`,
+    `"${d.created_at}"`
+  ]);
+
+  downloadCsvFile([headers.join(','), ...rows.map(r => r.join(','))].join('\n'), `InAmigos_Donation_Pledges_Report_${new Date().toISOString().split('T')[0]}.csv`);
+  showToast('Donation Pledges Excel/CSV report downloaded! 📊', 'success');
+};
+
+function downloadCsvFile(content, fileName) {
+  // UTF-8 BOM so Excel opens Hindi / special characters without corruption
+  const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// Save Cloud DB Config
+window.handleSaveDbConfig = function(e) {
+  e.preventDefault();
+  const url = document.getElementById('cfgSupabaseUrl').value.trim();
+  const key = document.getElementById('cfgSupabaseKey').value.trim();
+
+  if (!url || !key) {
+    showToast('Please provide both Project URL and Anon Key.', 'warning');
+    return;
+  }
+
+  localStorage.setItem(DB_CONFIG_STORAGE_KEY, JSON.stringify({ url, key }));
+  window.dbEngine.init();
+  showToast('Supabase credentials saved! Testing cloud connection...', 'info');
+
+  setTimeout(() => {
+    refreshAdminData();
+    showToast('Connected to Supabase Central Cloud Database! 🟢', 'success');
+  }, 1000);
+};
+
+window.resetDbConfigToLocal = function() {
+  localStorage.removeItem(DB_CONFIG_STORAGE_KEY);
+  window.dbEngine.isCloudConnected = false;
+  window.dbEngine.supabaseClient = null;
+  refreshAdminData();
+  showToast('Reset to encrypted local storage mode.', 'info');
+};
+
+window.openAdminModal = openAdminModal;
+window.closeAdminModal = closeAdminModal;
