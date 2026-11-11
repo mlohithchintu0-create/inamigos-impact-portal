@@ -1237,14 +1237,7 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Application Engine (Root & Subfolder Fallbacks) -->
-  <script src="js/app.js" onerror="var s=document.createElement('script');s.src='app.js';document.body.appendChild(s);"></script>
-  <script>
-    if (typeof initTheme === 'undefined') {
-      var s = document.createElement('script');
-      s.src = 'app.js';
-      document.body.appendChild(s);
-    }
-  </script>
+  <!-- Application Engine -->
+  <script src="app.js"></script>
 </body>
 </html>
