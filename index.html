@@ -13,8 +13,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <!-- Main Stylesheet -->
+  <!-- Supabase Cloud Database Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Main Stylesheet (Root & Subfolder Fallbacks) -->
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
@@ -71,6 +75,14 @@
         <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle Color Theme">
           <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+
+        <!-- Admin Command Center Button -->
+        <button class="icon-btn" id="adminPortalTrigger" title="Admin Command Center (Secure Access)" aria-label="Open Admin Dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
         </button>
 
@@ -878,6 +890,7 @@
             <li><a href="#volunteer">Volunteer Portal</a></li>
             <li><a href="#donate">Donation Hub (80G)</a></li>
             <li><a href="#calculator">Impact Calculator</a></li>
+            <li><a href="javascript:void(0)" id="footerAdminTrigger" style="color: var(--primary); font-weight: 700;">Admin Command Center 🔒</a></li>
           </ul>
         </div>
 
@@ -936,10 +949,302 @@
     </div>
   </div>
 
+  <!-- =========================================================================
+       Admin Command Center Modal (Secure Real-Time Management Hub)
+       ========================================================================= -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-card admin-modal-card">
+      <button class="modal-close-btn" onclick="closeAdminModal()" aria-label="Close Admin Modal">✕</button>
+
+      <!-- VIEW A: SECURE ADMIN LOGIN SCREEN -->
+      <div id="adminLoginView" class="admin-modal-body">
+        <div class="admin-login-wrap">
+          <div class="admin-lock-icon">🔒</div>
+          <h2 class="admin-login-title">Executive Admin Portal</h2>
+          <p class="admin-login-subtitle">InAmigos Foundation • Authorized Personnel Only</p>
+
+          <form id="adminLoginForm">
+            <div class="admin-input-group">
+              <label for="adminEmailInput">Admin Email Address</label>
+              <input type="email" id="adminEmailInput" class="form-control" value="admin@inamigosfoundation.org" required />
+            </div>
+
+            <div class="admin-input-group">
+              <label for="adminPasswordInput">Security Key / Password</label>
+              <input type="password" id="adminPasswordInput" class="form-control" value="InAmigos@2026" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 0.5rem;">
+              Unlock Command Center 🛡️
+            </button>
+          </form>
+
+          <div style="margin-top: 1.5rem; padding: 0.85rem; border-radius: var(--radius-sm); background: var(--bg-surface-alt); font-size: 0.8rem; color: var(--text-muted); text-align: left; line-height: 1.5;">
+            <strong>ℹ️ Evaluation Access Credentials:</strong><br/>
+            Email: <code>admin@inamigosfoundation.org</code><br/>
+            Password: <code>InAmigos@2026</code><br/>
+            <em>(Supports custom Supabase Cloud Admin accounts or local encrypted evaluation session)</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW B: LIVE ADMIN COMMAND CENTER DASHBOARD -->
+      <div id="adminMainDashboardView" class="admin-modal-body" style="display: none;">
+        <!-- Header Bar -->
+        <div class="admin-dash-header">
+          <div class="admin-dash-title-group">
+            <h2>
+              <span>ImpactPulse</span> Executive Dashboard
+              <span class="live-sync-pill" id="adminLiveSyncBadge">
+                <span class="pulse-dot"></span> <span id="syncStatusText">Real-Time Synced</span>
+              </span>
+            </h2>
+            <div style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Logged in as: <strong id="currentAdminEmail">admin@inamigosfoundation.org</strong> • Central Database Connected
+            </div>
+          </div>
+
+          <div class="admin-dash-actions">
+            <button class="btn btn-secondary" id="btnAdminRefresh" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              🔄 Refresh Now
+            </button>
+            <button class="btn btn-danger" id="btnAdminLogout" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+              Logout 🚪
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Metric Cards -->
+        <div class="admin-kpi-grid">
+          <!-- Card 1: Today's Registrations -->
+          <div class="admin-kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Today's Activity</span>
+              <span class="kpi-icon">⚡</span>
+            </div>
+            <div class="kpi-value" id="kpiTodayCount">0</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag-good">Live Intake</span> • Today's applicants & donors
+            </div>
+          </div>
+
+          <!-- Card 2: Total Volunteers -->
+          <div class="admin-kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Total Volunteers</span>
+              <span class="kpi-icon">👥</span>
+            </div>
+            <div class="kpi-value" id="kpiTotalVolunteers">0</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag-good">100% Verified</span> • Active across 12 chapters
+            </div>
+          </div>
+
+          <!-- Card 3: Total Donation Pledges -->
+          <div class="admin-kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Pledged Amount</span>
+              <span class="kpi-icon">⏳</span>
+            </div>
+            <div class="kpi-value" id="kpiTotalPledges">₹0</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag-warning">Awaiting Transfer</span> • Unverified pledges
+            </div>
+          </div>
+
+          <!-- Card 4: Verified Donations -->
+          <div class="admin-kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Verified Donations</span>
+              <span class="kpi-icon">✅</span>
+            </div>
+            <div class="kpi-value" id="kpiVerifiedDonations">₹0</div>
+            <div class="kpi-footer">
+              <span class="kpi-tag-good">80G Issued</span> • Confirmed contributions
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="admin-tab-nav">
+          <button class="admin-tab-btn active" id="tabBtnVolunteers" onclick="switchAdminTab('volunteers')">
+            👥 Volunteers Hub <span class="tab-badge" id="badgeVolCount">0</span>
+          </button>
+          <button class="admin-tab-btn" id="tabBtnDonors" onclick="switchAdminTab('donors')">
+            ❤️ Donors & Pledges <span class="tab-badge" id="badgeDonorCount">0</span>
+          </button>
+          <button class="admin-tab-btn" id="tabBtnAnalytics" onclick="switchAdminTab('analytics')">
+            📈 Daily Stats & Trends
+          </button>
+          <button class="admin-tab-btn" id="tabBtnDbConfig" onclick="switchAdminTab('dbconfig')">
+            ⚙️ Cloud Database Config
+          </button>
+        </div>
+
+        <!-- TAB CONTENT 1: VOLUNTEERS HUB -->
+        <div id="adminTabContentVolunteers" class="admin-tab-content">
+          <div class="admin-filter-bar">
+            <div class="admin-filter-left">
+              <input type="text" id="adminVolSearch" class="admin-search-input" placeholder="Search by name, phone, email, city..." oninput="filterVolunteersTable()" />
+              <select id="adminVolDomainSelect" class="admin-select" onchange="filterVolunteersTable()">
+                <option value="all">All Impact Wings</option>
+                <option value="Education">Education & Mentoring</option>
+                <option value="Environment">Urban Afforestation</option>
+                <option value="Animal">Animal Care</option>
+                <option value="Food">Food Rescue</option>
+                <option value="Tech">Tech & Development</option>
+                <option value="PR">Public Relations</option>
+              </select>
+            </div>
+            <button class="btn btn-accent" id="btnExportVolCsv" onclick="exportVolunteersToCsv()">
+              📥 Export Volunteers (Excel / CSV)
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Reg. Date & Time</th>
+                  <th>Member ID</th>
+                  <th>Volunteer Details</th>
+                  <th>Contact Info</th>
+                  <th>Chapter Location</th>
+                  <th>Impact Wing</th>
+                  <th>Commitment</th>
+                </tr>
+              </thead>
+              <tbody id="adminVolunteersTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: DONORS & PLEDGES HUB -->
+        <div id="adminTabContentDonors" class="admin-tab-content" style="display: none;">
+          <div class="admin-filter-bar">
+            <div class="admin-filter-left">
+              <input type="text" id="adminDonorSearch" class="admin-search-input" placeholder="Search by donor name, email, PAN, receipt..." oninput="filterDonorsTable()" />
+              <select id="adminDonorStatusSelect" class="admin-select" onchange="filterDonorsTable()">
+                <option value="all">All Pledges & Donations</option>
+                <option value="pledged">Pledged Only ⏳ (Unverified)</option>
+                <option value="verified">Verified Payments ✅</option>
+              </select>
+            </div>
+            <button class="btn btn-accent" id="btnExportDonorsCsv" onclick="exportDonorsToCsv()">
+              📥 Export Donors (Excel / CSV)
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Receipt / Ref #</th>
+                  <th>Donor Details</th>
+                  <th>Pledged Amount</th>
+                  <th>Type</th>
+                  <th>Payment Status</th>
+                  <th>PAN / Tax ID</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminDonorsTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: DAILY STATS & ANALYTICS -->
+        <div id="adminTabContentAnalytics" class="admin-tab-content" style="display: none;">
+          <div class="admin-analytics-grid">
+            <div class="chart-card">
+              <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.35rem;">7-Day Registration Intake Volume</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Daily count of new volunteer applications across all city chapters.</p>
+              
+              <div class="chart-bars-wrap" id="chartBarsContainer">
+                <!-- Populated dynamically -->
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
+                <span>← 7 Days Ago</span>
+                <span style="font-weight: 700; color: var(--primary);">Today (Live Intake)</span>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.35rem;">Chapter Activity Ranking</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Top cities driving youth engagement.</p>
+
+              <div id="chapterDistributionList" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 4: CLOUD DATABASE SETTINGS -->
+        <div id="adminTabContentDbConfig" class="admin-tab-content" style="display: none;">
+          <div class="cloud-config-card">
+            <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;">Supabase Central Database Configuration</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.55;">
+              Connect your live cloud PostgreSQL instance. When configured, registrations from any laptop, iPhone, or Android phone instantly sync here in real time.
+            </p>
+
+            <div class="db-status-banner connected" id="dbStatusIndicator">
+              <span style="font-size: 1.4rem;">🟢</span>
+              <div id="dbStatusDetails">
+                <strong>System Active: Cloud Synchronizer Enabled</strong><br/>
+                <span style="font-size: 0.82rem;">Real-time WebSocket intake and secure offline fallback are operational.</span>
+              </div>
+            </div>
+
+            <form id="dbConfigForm" onsubmit="handleSaveDbConfig(event)">
+              <div class="form-group">
+                <label for="cfgSupabaseUrl">Supabase Project URL</label>
+                <input type="text" id="cfgSupabaseUrl" class="form-control" placeholder="https://xyzcompany.supabase.co" />
+              </div>
+
+              <div class="form-group">
+                <label for="cfgSupabaseKey">Supabase Anon Public Key</label>
+                <input type="password" id="cfgSupabaseKey" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                  Save & Test Cloud Connection ⚡
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="resetDbConfigToLocal()">
+                  Reset to Encrypted Local Mode
+                </button>
+              </div>
+            </form>
+
+            <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+              <strong>Need a free cloud database?</strong><br/>
+              1. Sign up at <a href="https://supabase.com" target="_blank" style="color: var(--primary); text-decoration: underline;">supabase.com</a> (Free forever tier).<br/>
+              2. Open SQL Editor and execute the provided <code>supabase_setup.sql</code> script.<br/>
+              3. Copy your Project URL & Anon Public Key from Project Settings ➔ API.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Application Engine -->
-  <script src="app.js"></script>
+  <!-- Application Engine (Root & Subfolder Fallbacks) -->
+  <script src="js/app.js" onerror="var s=document.createElement('script');s.src='app.js';document.body.appendChild(s);"></script>
+  <script>
+    if (typeof initTheme === 'undefined') {
+      var s = document.createElement('script');
+      s.src = 'app.js';
+      document.body.appendChild(s);
+    }
+  </script>
 </body>
 </html>
