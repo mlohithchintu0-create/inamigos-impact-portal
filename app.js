@@ -4,7 +4,7 @@
  * Pure Vanilla JavaScript (ES6+)
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function startApp() {
   initTheme();
   initScrollReveal();
   initCounters();
@@ -23,7 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletterAndContact();
   initDatabaseEngine();
   initAdminPortal();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp);
+} else {
+  startApp();
+}
 
 /* ==========================================================================
    1. Theme Management (Dark / Light Mode)
@@ -68,6 +74,11 @@ function initScrollReveal() {
   const revealElements = document.querySelectorAll('.reveal');
   if (!revealElements.length) return;
 
+  // Immediately activate all visible elements so content is never blank
+  revealElements.forEach(el => {
+    el.classList.add('active');
+  });
+
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -75,7 +86,7 @@ function initScrollReveal() {
         obs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.1 });
 
   revealElements.forEach(el => observer.observe(el));
 }
