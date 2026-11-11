@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ImpactPulse by InAmigos Foundation - An interactive social innovation, volunteer registration, NGO activities, and community donation portal." />
+  <meta name="author" content="InAmigos Web Development Intern" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>ImpactPulse | InAmigos Foundation - NGO Activities, Volunteer & Donation Portal</title>
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Ambient Background Lighting -->
+  <div class="ambient-glow ambient-glow-1"></div>
+  <div class="ambient-glow ambient-glow-2"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="#hero" class="brand-logo" aria-label="InAmigos Foundation Home">
+        <div class="brand-icon-box">
+          <!-- Heart & Hands SVG Logo -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+        </div>
+        <div class="brand-text">Impact<span>Pulse</span> <span style="font-size: 0.72rem; font-weight: 600; opacity: 0.7; display: block; line-height: 1;">INAMIGOS FOUNDATION</span></div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#activities" class="nav-link">NGO Programs</a></li>
+          <li><a href="#volunteer" class="nav-link">Volunteer Portal</a></li>
+          <li><a href="#donate" class="nav-link">Donate (80G)</a></li>
+          <li><a href="#causes" class="nav-link">Causes</a></li>
+          <li><a href="#calculator" class="nav-link">Impact Calculator</a></li>
+          <li><a href="#certificates" class="nav-link">Certificates</a></li>
+          <li><a href="#events" class="nav-link">Drives</a></li>
+        </ul>
+      </nav>
+
+      <!-- Utility Actions -->
+      <div class="nav-actions">
+        <!-- Quick Spotlight Search (Cmd + K) -->
+        <button class="icon-btn" id="spotlightTrigger" title="Quick Search (Ctrl + K)" aria-label="Open Quick Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <!-- Sound FX Toggle -->
+        <button class="icon-btn" id="soundToggleBtn" title="Toggle Interaction Sound" aria-label="Toggle Sound">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle Color Theme">
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+
+        <!-- Call to Action Donate Pill -->
+        <a href="#donate" class="btn btn-danger" style="display: none; @media(min-width: 640px){display:inline-flex;}">
+          ❤️ Donate
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="icon-btn menu-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span>✨</span> InAmigos Foundation • Web Development Champions
+        </div>
+        <h1 class="hero-title">
+          Where <span class="gradient-text">Youth Compassion</span> Drives Ground-Level Change.
+        </h1>
+        <p class="hero-subtitle">
+          Join India's premier youth-led social impact collective. Register as an active volunteer, sponsor life-saving community initiatives with 80G tax benefits, and track measurable grassroots transformation.
+        </p>
+        <div class="hero-cta-group">
+          <a href="#volunteer" class="btn btn-primary">
+            <span>Register as Volunteer</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="#donate" class="btn btn-danger">
+            <span>❤️ Make a Donation</span>
+          </a>
+          <a href="#activities" class="btn btn-secondary">
+            <span>Explore Programs</span>
+          </a>
+        </div>
+
+        <div class="hero-trust-bar">
+          <div class="avatar-stack">
+            <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80');"></div>
+            <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80');"></div>
+            <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80');"></div>
+            <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80');"></div>
+          </div>
+          <div class="trust-text">
+            <strong>1,480+ Registered Youth Volunteers</strong>
+            <span>Active across 12+ city chapters nationwide</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual Card -->
+      <div class="hero-visual">
+        <div class="floating-pill floating-pill-1">
+          <span>🌱</span> <strong>14,250+ Trees</strong> Planted & Nurtured
+        </div>
+        <div class="floating-pill floating-pill-2">
+          <span>🛡️</span> <strong>80G Certified</strong> Tax Exemption NGO
+        </div>
+
+        <div class="main-preview-card">
+          <div class="card-top">
+            <span class="live-indicator">
+              <span class="pulse-dot"></span> Live Field Operations
+            </span>
+            <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700;">Real-Time Feed</span>
+          </div>
+
+          <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.25rem;">
+            <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=700&q=80" alt="Volunteers in Action" style="width: 100%; height: 200px; object-fit: cover;" />
+          </div>
+
+          <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.4rem;">Project Vidya: Slum Education Camp</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.55;">
+            Volunteers conducted digital literacy and foundational English reading workshops for 120+ slum students today.
+          </p>
+
+          <div class="hero-metric-row">
+            <div class="metric-mini-box">
+              <div class="label">Attendance</div>
+              <div class="val">124 Kids</div>
+            </div>
+            <div class="metric-mini-box">
+              <div class="label">Volunteers Active</div>
+              <div class="val">18 Interns</div>
+            </div>
+          </div>
+
+          <a href="#activities" class="btn btn-secondary" style="width: 100%; font-size: 0.9rem; padding: 0.7rem 1rem;">
+            View All NGO Activities & Drives →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Stats Section -->
+  <section class="stats-section reveal" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon">🍲</div>
+          <div class="stat-number" data-target="25800" data-suffix="+">0</div>
+          <div class="stat-label">Warm Meals Distributed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🌳</div>
+          <div class="stat-number" data-target="14250" data-suffix="+">0</div>
+          <div class="stat-label">Native Trees Planted</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">📚</div>
+          <div class="stat-number" data-target="8600" data-suffix="+">0</div>
+          <div class="stat-label">Children Educated & Mentored</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-number" data-target="1480" data-suffix="+">0</div>
+          <div class="stat-label">Certified Youth Volunteers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 1: Comprehensive NGO Activities & Programs Showcase
+       ========================================================================= -->
+  <section class="activities-section reveal" id="activities">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag">Grassroots Initiatives</span>
+        <h2 class="section-title">InAmigos Foundation NGO Activities</h2>
+        <p class="section-desc">
+          Explore our signature on-ground community programs running across India. From digital learning kiosks to urban afforestation and emergency animal rescue.
+        </p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="activity-tabs-wrap">
+        <button class="activity-tab-btn active" data-cat="all">All Programs (6)</button>
+        <button class="activity-tab-btn" data-cat="education">📚 Education</button>
+        <button class="activity-tab-btn" data-cat="environment">🌱 Environment</button>
+        <button class="activity-tab-btn" data-cat="food">🍲 Food Rescue</button>
+        <button class="activity-tab-btn" data-cat="animal">🐾 Animal Care</button>
+        <button class="activity-tab-btn" data-cat="healthcare">🩺 Healthcare</button>
+        <button class="activity-tab-btn" data-cat="empowerment">🧵 Women Livelihood</button>
+      </div>
+
+      <!-- Bento Grid populated by app.js -->
+      <div class="activities-bento-grid" id="activitiesGrid"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 2: Dedicated Volunteer Registration Portal & Live ID Card
+       ========================================================================= -->
+  <section class="volunteer-section reveal" id="volunteer">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag accent">Join The Movement</span>
+        <h2 class="section-title">Volunteer Registration Portal</h2>
+        <p class="section-desc">
+          Fill out your details to join our active volunteer corps. Instantly receive your verified InAmigos Digital Volunteer ID Badge with real-time certificate tracking.
+        </p>
+      </div>
+
+      <div class="volunteer-portal-grid">
+        <!-- Registration Form Card -->
+        <div class="volunteer-form-card">
+          <h3 style="font-size: 1.45rem; font-weight: 800; margin-bottom: 0.5rem;">Intern & Volunteer Application</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 2rem;">
+            Whether you are a developer, designer, educator, or field leader, there is an impact wing waiting for your talents!
+          </p>
+
+          <form id="volunteerRegisterForm">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="volName">Full Name *</label>
+                <input type="text" id="volName" class="form-control" value="Aarav Sharma" required />
+              </div>
+              <div class="form-group">
+                <label for="volEmail">Email Address *</label>
+                <input type="email" id="volEmail" class="form-control" placeholder="aarav@example.com" required />
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="volPhone">Phone / WhatsApp *</label>
+                <input type="tel" id="volPhone" class="form-control" placeholder="+91 98765 43210" required />
+              </div>
+              <div class="form-group">
+                <label for="volCity">City / Chapter *</label>
+                <input type="text" id="volCity" class="form-control" value="Delhi NCR" required />
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="volDomain">Preferred Impact Wing *</label>
+                <select id="volDomain" class="form-control">
+                  <option value="education">Education & Slum Mentorship</option>
+                  <option value="environment">Urban Afforestation & Eco Cleanups</option>
+                  <option value="animal">Animal Care & Emergency Rescue</option>
+                  <option value="food">Zero Hunger Food Redistribution</option>
+                  <option value="tech">Web Development, UI & Tech Innovation</option>
+                  <option value="pr">Public Relations & Community Outreach</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="volHours">Availability per Week</label>
+                <select id="volHours" class="form-control">
+                  <option value="4">4-6 Hours (Weekends)</option>
+                  <option value="10">8-12 Hours (Regular Contributor)</option>
+                  <option value="20">15+ Hours (Core Lead / Intern)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="volMotivation">Tell us about your skills & motivation</label>
+              <textarea id="volMotivation" class="form-control" placeholder="I am passionate about building technology solutions for social welfare and educating underprivileged kids..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.05rem; padding: 0.9rem;">
+              Complete Registration & Issue Volunteer ID 🪪
+            </button>
+          </form>
+        </div>
+
+        <!-- Live Digital Volunteer ID Badge Preview -->
+        <div class="badge-preview-container">
+          <div class="id-badge-card" id="volunteerBadgeCard">
+            <div class="badge-top-bar">
+              <div class="badge-org-title">InAmigos Foundation</div>
+              <span style="font-size: 0.72rem; background: rgba(56, 189, 248, 0.2); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); color: #38bdf8; font-weight: 700;">
+                OFFICIAL PASS
+              </span>
+            </div>
+
+            <div class="badge-profile-row">
+              <div class="badge-avatar-box" id="badgeVolAvatar">A</div>
+              <div class="badge-name-block">
+                <h3 id="badgeVolName">Aarav Sharma</h3>
+                <span class="badge-role-tag" id="badgeVolRole">Education & Mentorship</span>
+              </div>
+            </div>
+
+            <div class="badge-meta-grid">
+              <div class="badge-meta-item">
+                <div class="meta-label">Member ID</div>
+                <div class="meta-val" id="badgeVolId">IAMG-VOL-8492</div>
+              </div>
+              <div class="badge-meta-item">
+                <div class="meta-label">Chapter Location</div>
+                <div class="meta-val" id="badgeVolCity">Delhi NCR</div>
+              </div>
+              <div class="badge-meta-item">
+                <div class="meta-label">Valid Through</div>
+                <div class="meta-val">12/2027</div>
+              </div>
+              <div class="badge-meta-item">
+                <div class="meta-label">Status</div>
+                <div class="meta-val" style="color: #34d399;">ACTIVE CREW</div>
+              </div>
+            </div>
+
+            <div class="badge-barcode-line">
+              ||||| | |||| ||| ||||| || |||||||| ||||
+            </div>
+          </div>
+
+          <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem;">
+            <button class="btn btn-secondary" id="downloadBadgeBtn" style="flex: 1;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Download Digital ID (PNG)</span>
+            </button>
+          </div>
+          <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 0.65rem; text-align: center;">
+            Badge updates in real time as you edit the application form.
+          </small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 3: Dedicated Giving & Donation Portal (80G Tax Exemption)
+       ========================================================================= -->
+  <section class="donation-section reveal" id="donate">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag warning">Make A Direct Impact</span>
+        <h2 class="section-title">Support InAmigos Foundation Causes</h2>
+        <p class="section-desc">
+          Your contributions directly fund nutritious meals, school supplies, tree saplings, and emergency animal medical care. 100% transparent with Section 80G tax benefits.
+        </p>
+      </div>
+
+      <div class="donation-grid">
+        <!-- Donation Selection Card -->
+        <div class="donation-box-card">
+          <!-- Frequency Toggle -->
+          <div class="frequency-switch-wrap">
+            <button class="freq-btn active" data-freq="one-time">One-Time Gift</button>
+            <button class="freq-btn" data-freq="monthly">Monthly Sustainer 💖</button>
+          </div>
+
+          <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem;">Select Contribution Amount</h4>
+
+          <div class="amount-selector-grid">
+            <button class="amount-btn" data-amt="250">₹250</button>
+            <button class="amount-btn" data-amt="500">₹500</button>
+            <button class="amount-btn active" data-amt="1000">₹1,000</button>
+            <button class="amount-btn" data-amt="2500">₹2,500</button>
+            <button class="amount-btn" data-amt="5000">₹5,000</button>
+            <button class="amount-btn" data-amt="10000">₹10,000</button>
+          </div>
+
+          <div class="custom-amount-wrap">
+            <span class="custom-amount-symbol">₹</span>
+            <input type="number" id="customDonationInput" class="custom-amount-input" placeholder="Or enter custom amount in INR..." />
+          </div>
+
+          <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.75rem;">Payment Method</h4>
+          <div class="payment-methods-row">
+            <button class="payment-method-chip active">📱 UPI / QR Code</button>
+            <button class="payment-method-chip">💳 Debit / Credit Card</button>
+            <button class="payment-method-chip">🏦 Net Banking</button>
+          </div>
+
+          <!-- Donor Details Form -->
+          <form id="donationForm">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="donorName">Donor Full Name *</label>
+                <input type="text" id="donorName" class="form-control" value="Rohit Malhotra" required />
+              </div>
+              <div class="form-group">
+                <label for="donorEmail">Email for 80G Tax Receipt *</label>
+                <input type="email" id="donorEmail" class="form-control" value="rohit@example.com" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="donorPan">PAN Card Number (Optional for Tax Exemption)</label>
+              <input type="text" id="donorPan" class="form-control" placeholder="ABCDE1234F" maxlength="10" />
+            </div>
+
+            <button type="submit" class="btn btn-danger" style="width: 100%; font-size: 1.05rem; padding: 0.95rem;">
+              Proceed to Secure Donation 🔒
+            </button>
+          </form>
+        </div>
+
+        <!-- Giving Impact Summary Column -->
+        <div class="giving-summary-card">
+          <span class="badge-tag accent" style="margin-bottom: 0.75rem;">Direct Ground Impact</span>
+          <h3 style="font-size: 1.85rem; font-weight: 900; color: var(--primary);" id="summaryDonationAmount">₹1,000</h3>
+          <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin: 1rem 0;" id="summaryDonationImpact">
+            Plants and geo-tags 10 indigenous Peepal & Neem saplings in urban heat spots 🌳
+          </p>
+
+          <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem;">
+              <span>✅</span> 100% Transparent Utilization
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5;">
+              88% of funds go straight to program deployment, 10% to volunteer logistics, and 2% to bank processing.
+            </p>
+          </div>
+
+          <div class="tax-badge-banner">
+            <span style="font-size: 1.75rem;">📜</span>
+            <span>
+              <strong>50% Tax Deduction under Section 80G</strong><br/>
+              Registered Charity No. U85300DL2021NPL389201. Verified 80G receipt issued immediately.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Causes Explorer Section -->
+  <section class="causes-section reveal" id="causes">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag">Community Action</span>
+        <h2 class="section-title">Explore Active Social Causes</h2>
+        <p class="section-desc">
+          Filter through our foundation's ongoing initiatives. Support a cause with your skills, volunteer time, or direct community involvement.
+        </p>
+      </div>
+
+      <!-- Controls: Category Filter Pills + Search -->
+      <div class="filter-controls-wrap">
+        <div class="filter-pills">
+          <button class="filter-btn active" data-filter="all">All Initiatives</button>
+          <button class="filter-btn" data-filter="education">Education</button>
+          <button class="filter-btn" data-filter="environment">Environment</button>
+          <button class="filter-btn" data-filter="animal">Animal Care</button>
+          <button class="filter-btn" data-filter="food">Food Rescue</button>
+          <button class="filter-btn" data-filter="empowerment">Women Uplift</button>
+          <button class="filter-btn" data-filter="healthcare">Healthcare</button>
+        </div>
+
+        <div class="search-box-wrap">
+          <svg class="search-icon-inside" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="causeSearchInput" class="search-input" placeholder="Search by initiative name or keyword..." />
+        </div>
+      </div>
+
+      <!-- Dynamic Causes Grid -->
+      <div class="causes-grid" id="causesGrid"></div>
+    </div>
+  </section>
+
+  <!-- Interactive Impact Calculator Section -->
+  <section class="calculator-section reveal" id="calculator">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag accent">Gamified Impact Simulator</span>
+        <h2 class="section-title">Measure Your Personal Impact Footprint</h2>
+        <p class="section-desc">
+          Drag the sliders to see the tangible real-world transformation your contribution creates every single month!
+        </p>
+      </div>
+
+      <div class="calc-card-grid">
+        <!-- Sliders Column -->
+        <div class="calc-inputs-column">
+          <h3 style="font-size: 1.4rem; margin-bottom: 1.5rem; font-weight: 800;">Set Your Monthly Engagement</h3>
+
+          <!-- Slider 1: Volunteer Hours -->
+          <div class="calc-slider-group">
+            <div class="calc-label-row">
+              <label for="calcHours">Volunteer Hours Dedicated</label>
+              <span class="calc-value-badge" id="calcHoursVal">12 hrs/mo</span>
+            </div>
+            <input type="range" id="calcHours" class="range-slider" min="0" max="40" value="12" step="1" />
+            <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; display: block;">
+              Mentoring, teaching, distribution drives, or digital volunteering.
+            </small>
+          </div>
+
+          <!-- Slider 2: Trees Planted -->
+          <div class="calc-slider-group">
+            <div class="calc-label-row">
+              <label for="calcTrees">Saplings Planted / Sponsored</label>
+              <span class="calc-value-badge" id="calcTreesVal" style="background: var(--accent);">5 saplings</span>
+            </div>
+            <input type="range" id="calcTrees" class="range-slider" min="0" max="30" value="5" step="1" />
+            <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; display: block;">
+              Native peepal, neem, and banyan trees planted in urban hotspots.
+            </small>
+          </div>
+
+          <!-- Slider 3: Meals Sponsored -->
+          <div class="calc-slider-group">
+            <div class="calc-label-row">
+              <label for="calcMeals">Meals Funded / Rescued</label>
+              <span class="calc-value-badge" id="calcMealsVal" style="background: var(--warning);">20 meals</span>
+            </div>
+            <input type="range" id="calcMeals" class="range-slider" min="0" max="100" value="20" step="5" />
+            <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; display: block;">
+              Hygienic wholesome meals served to daily wage earners & destitute children.
+            </small>
+          </div>
+        </div>
+
+        <!-- Real-Time Outcome Column -->
+        <div class="calc-result-box">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span style="font-size: 0.88rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Estimated Positive Output</span>
+              <span id="rankTierBadge" style="font-weight: 800; font-size: 0.88rem;">Live Calculation</span>
+            </div>
+
+            <div class="result-metric-grid">
+              <div class="result-metric-card">
+                <div class="result-icon">🌿</div>
+                <div class="result-val" id="resultCo2">152 kg</div>
+                <div class="result-label">CO2 Sequestered / Year</div>
+              </div>
+              <div class="result-metric-card">
+                <div class="result-icon">🎓</div>
+                <div class="result-val" id="resultKids">22</div>
+                <div class="result-label">Children Mentored</div>
+              </div>
+              <div class="result-metric-card">
+                <div class="result-icon">🍲</div>
+                <div class="result-val" id="resultMeals">20</div>
+                <div class="result-label">Warm Meals Provided</div>
+              </div>
+              <div class="result-metric-card">
+                <div class="result-icon">⚡</div>
+                <div class="result-val" id="resultKarma">465 pts</div>
+                <div class="result-label">Impact Karma Points</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="unlocked-tier-banner">
+            <span class="trophy-icon">🏆</span>
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Current Unlocked Status</div>
+              <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);" id="rankTierName">Active Catalyst ⚡</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Wall of Kindness Section -->
+  <section class="wall-section reveal" id="wall">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag">Community Wall</span>
+        <h2 class="section-title">The Wall of Kindness & Pledges</h2>
+        <p class="section-desc">
+          Every positive deed begins with a simple commitment. Write your pledge, motivate fellow interns, and spread genuine inspiration.
+        </p>
+      </div>
+
+      <div class="pledge-interface">
+        <!-- Form to Add Pledge -->
+        <div class="pledge-form-card">
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem;">Post Your Good Deed or Pledge</h3>
+          <form id="pledgeForm">
+            <div class="form-group">
+              <label for="pledgeName">Your Name / Alias</label>
+              <input type="text" id="pledgeName" class="form-control" placeholder="e.g. Ananya Rao" required />
+            </div>
+
+            <div class="form-group">
+              <label for="pledgeCategory">Cause Category</label>
+              <select id="pledgeCategory" class="form-control">
+                <option value="Education">Education & Mentoring</option>
+                <option value="Environment">Eco & Green Earth</option>
+                <option value="Animal Care">Animal Rescue & Feeding</option>
+                <option value="Food Drive">Food Rescue & Relief</option>
+                <option value="General Kindness">Random Act of Kindness</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pledgeText">Your Commitment / Uplifting Note</label>
+              <textarea id="pledgeText" class="form-control" placeholder="I promise to spend 2 hours this Sunday feeding stray pups and distributing food packets..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Publish to Wall of Kindness 💖
+            </button>
+          </form>
+        </div>
+
+        <!-- Live Pledges Feed -->
+        <div class="pledge-stream" id="pledgeStream"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Volunteer Certificate & Appreciation Studio -->
+  <section class="cert-section reveal" id="certificates">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag accent">Official Recognition</span>
+        <h2 class="section-title">Volunteer Certificate Studio</h2>
+        <p class="section-desc">
+          Generate an authentic, high-resolution InAmigos Foundation Certificate of Appreciation. Instant live canvas rendering with one-click PNG download & print readiness.
+        </p>
+      </div>
+
+      <div class="cert-studio-grid">
+        <!-- Controls Column -->
+        <div class="cert-controls-card">
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem;">Customize Your Certificate</h3>
+
+          <div class="form-group">
+            <label for="certNameInput">Volunteer / Intern Name</label>
+            <input type="text" id="certNameInput" class="form-control" value="Aarav Sharma" placeholder="Enter Full Name" />
+          </div>
+
+          <div class="form-group">
+            <label for="certRoleInput">Role / Contribution Domain</label>
+            <input type="text" id="certRoleInput" class="form-control" value="Web Development Intern & Youth Advocate" placeholder="e.g. Community Impact Lead" />
+          </div>
+
+          <div class="form-group">
+            <label for="certHoursInput">Hours of Dedicated Service</label>
+            <input type="number" id="certHoursInput" class="form-control" value="35" min="1" max="500" />
+          </div>
+
+          <div class="form-group">
+            <label for="certDateInput">Issue Date</label>
+            <input type="date" id="certDateInput" class="form-control" />
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+            <button id="certDownloadBtn" class="btn btn-primary" style="flex: 1;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Download PNG</span>
+            </button>
+            <button id="certPrintBtn" class="btn btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+            </button>
+          </div>
+          <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 0.85rem; text-align: center;">
+            Rendered natively using HTML5 Canvas 2D engine with verified digital watermark.
+          </small>
+        </div>
+
+        <!-- Live Visual Preview of Certificate -->
+        <div class="cert-preview-card-wrap">
+          <div class="cert-canvas-container" id="certContainer">
+            <div class="cert-watermark">INAMIGOS</div>
+
+            <div class="cert-header">
+              <div class="cert-org-logo">INAMIGOS FOUNDATION</div>
+              <h2 class="cert-headline">Certificate of Appreciation</h2>
+              <div class="cert-subline">Honoring Social Innovation & Volunteer Excellence</div>
+            </div>
+
+            <div class="cert-recipient-name" id="previewCertName">Aarav Sharma</div>
+
+            <p class="cert-body-text">
+              This certificate is proudly awarded for outstanding dedication, compassionate leadership, and 
+              <strong id="previewCertHours">35</strong> hours of meritorious community contribution as a 
+              <strong id="previewCertRole">Web Development Intern & Youth Advocate</strong> in furtherance of 
+              the InAmigos Foundation mission.
+            </p>
+
+            <div class="cert-meta-row">
+              <div class="cert-signature-box">
+                <div class="cert-signature-line" id="previewCertDate">November 11, 2026</div>
+                <div class="cert-signature-title">Date of Conferment</div>
+              </div>
+
+              <div class="cert-seal">
+                <span>INAMIGOS<br/>HONOR</span>
+              </div>
+
+              <div class="cert-signature-box">
+                <div class="cert-signature-line" style="font-family: 'Brush Script MT', cursive, Georgia;">Rohit Verma</div>
+                <div class="cert-signature-title">Executive Director & HR Team</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Charity Drives & Events -->
+  <section class="events-section reveal" id="events">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag">Get Involved</span>
+        <h2 class="section-title">Upcoming Ground Drives & Webinars</h2>
+        <p class="section-desc">
+          Sign up for weekend on-ground drives or virtual capacity-building workshops. Real-time slot reservation with instant confirmation.
+        </p>
+      </div>
+
+      <div class="events-grid" id="eventsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Frequently Asked Questions (Accordion) -->
+  <section class="faq-section reveal" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge-tag">Got Questions?</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-desc">
+          Learn about the InAmigos internship, evaluation parameters, and how your web development projects create direct social value.
+        </p>
+      </div>
+
+      <div class="faq-wrap">
+        <div class="faq-item active">
+          <button class="faq-question">
+            <span>What are the key evaluation criteria for the Web Development Champions Challenge?</span>
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            The project is evaluated on five key pillars: <strong>Creativity & UI Design</strong> (aesthetic polish, glassmorphism, readability), <strong>Technical Skills</strong> (HTML5, responsive CSS3, modular JavaScript), <strong>Responsiveness</strong> (cross-device compatibility), <strong>Functionality</strong> (working interactive features like calculator, certificate generator, volunteer portal, donation receipts), and <strong>Code Quality</strong> (semantic, clean, maintainable structure).
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Are donations made through InAmigos Foundation eligible for tax exemption?</span>
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            Yes! InAmigos Foundation is registered under Section 80G of the Indian Income Tax Act. Donors receive an instant official 80G tax receipt that can be submitted for a 50% deduction on taxable income.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do the Volunteer Registration and Certificate Studios work?</span>
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            The Volunteer Registration Portal generates a unique membership ID with live preview and downloadable ID badge. The Certificate Studio uses the native HTML5 Canvas 2D engine to dynamically render and export crisp PNG certificates with official stamps and digital verification tracking IDs.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Does this website require any backend server setup to run?</span>
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            No! The application is fully client-side and zero-dependency. All user data (pledges, volunteer records, RSVPs, theme preferences) seamlessly persists in the browser via <code>localStorage</code>, making it instantly hostable on GitHub Pages, Netlify, Vercel, or runnable by simply double-clicking <code>index.html</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter & Call to Action Banner -->
+  <section class="cta-banner-section reveal">
+    <div class="container">
+      <div class="cta-banner-card">
+        <h2 class="cta-banner-title">Be The Change You Want To See In The World.</h2>
+        <p class="cta-banner-desc">
+          Subscribe to our weekly youth changemaker bulletin. Receive alerts on local drives, mentorship sessions, and internship recognition opportunities.
+        </p>
+
+        <form class="newsletter-form" id="newsletterForm">
+          <input type="email" class="newsletter-input" placeholder="Enter your email address..." required />
+          <button type="submit" class="btn btn-accent" style="padding: 0.9rem 1.85rem;">
+            Join Movement
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="brand-icon-box" style="width: 36px; height: 36px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
+            </div>
+            <div class="brand-text">Impact<span>Pulse</span></div>
+          </div>
+          <p>
+            Dedicated to youth empowerment, grassroots social transformation, education equality, and ecological stewardship. Supported by InAmigos Foundation.
+          </p>
+          <div class="social-icons-row">
+            <a href="#" class="icon-btn" aria-label="LinkedIn" title="LinkedIn">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.53 1.53 0 1 0 0-3.06 1.53 1.53 0 0 0 0 3.06m1.37 9.74v-8.37H5.09v8.37h2.74z"/></svg>
+            </a>
+            <a href="#" class="icon-btn" aria-label="Instagram" title="Instagram">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+            </a>
+            <a href="#" class="icon-btn" aria-label="GitHub" title="GitHub">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#hero">Overview</a></li>
+            <li><a href="#activities">NGO Programs</a></li>
+            <li><a href="#volunteer">Volunteer Portal</a></li>
+            <li><a href="#donate">Donation Hub (80G)</a></li>
+            <li><a href="#calculator">Impact Calculator</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Core Causes</h4>
+          <ul class="footer-links">
+            <li><a href="#activities">Slum Child Literacy</a></li>
+            <li><a href="#activities">Miyawaki Afforestation</a></li>
+            <li><a href="#activities">Stray Animal Shelters</a></li>
+            <li><a href="#activities">Zero Hunger Food Rescue</a></li>
+            <li><a href="#events">Upcoming Clean-Up Drives</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Submission Details</h4>
+          <p style="font-size: 0.85rem; line-height: 1.6;">
+            <strong>Task:</strong> Web Development Champions Challenge<br/>
+            <strong>Organized by:</strong> HR Team | InAmigos Foundation<br/>
+            <strong>Built with:</strong> Semantic HTML5, CSS3 Variables, Glassmorphism, Vanilla JS (ES6+), Canvas 2D Engine
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 InAmigos Foundation. Built for Task 1: The Web Development Champions Challenge.</div>
+        <div style="color: var(--text-subtle);">Crafted with 💙 by InAmigos Web Development Intern</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Spotlight Search Modal (Cmd/Ctrl + K) -->
+  <div class="modal-overlay" id="spotlightModal">
+    <div class="modal-card spotlight-modal">
+      <button class="modal-close-btn" onclick="closeSpotlight()" aria-label="Close Spotlight">✕</button>
+      <div class="spotlight-header">
+        <svg class="spotlight-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="spotlightInput" class="spotlight-input" placeholder="Type a section or feature (e.g. activities, volunteer, donate)..." />
+      </div>
+      <ul class="spotlight-results" id="spotlightResults"></ul>
+      <div style="margin-top: 1rem; display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
+        <span>Tip: Press <kbd style="background:var(--bg-surface-alt); padding:2px 6px; border-radius:4px;">ESC</kbd> to exit</span>
+        <span>Keyboard Shortcut: <kbd style="background:var(--bg-surface-alt); padding:2px 6px; border-radius:4px;">Ctrl+K</kbd></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Modal -->
+  <div class="modal-overlay" id="causeModal">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeCauseModal()" aria-label="Close Modal">✕</button>
+      <div id="causeModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Engine -->
+  <script src="js/app.js"></script>
+</body>
+</html>
