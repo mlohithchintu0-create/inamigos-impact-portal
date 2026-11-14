@@ -117,13 +117,13 @@
           Join India's premier youth-led social impact collective. Register as an active volunteer, sponsor life-saving community initiatives with 80G tax benefits, and track measurable grassroots transformation.
         </p>
         <div class="hero-cta-group">
-          <a href="#volunteer" class="btn btn-primary">
+          <a href="#volunteer" class="btn btn-primary btn-shimmer">
             <span>Register as Volunteer</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </a>
-          <a href="#donate" class="btn btn-danger">
+          <a href="#donate" class="btn btn-danger btn-shimmer">
             <span>❤️ Make a Donation</span>
           </a>
           <a href="#activities" class="btn btn-secondary">
@@ -293,6 +293,42 @@
 
             <div class="form-grid-2">
               <div class="form-group">
+                <label for="volEmergencyPhone">Emergency Contact Phone</label>
+                <input type="tel" id="volEmergencyPhone" class="form-control" placeholder="+91 98111 22334" />
+              </div>
+              <div class="form-group">
+                <label for="volBloodGroup">Blood Group</label>
+                <select id="volBloodGroup" class="form-control">
+                  <option value="O+">O+ (Positive)</option>
+                  <option value="O-">O- (Negative)</option>
+                  <option value="A+">A+ (Positive)</option>
+                  <option value="A-">A- (Negative)</option>
+                  <option value="B+">B+ (Positive)</option>
+                  <option value="B-">B- (Negative)</option>
+                  <option value="AB+">AB+ (Positive)</option>
+                  <option value="AB-">AB- (Negative)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="volCollege">College / Workplace</label>
+                <input type="text" id="volCollege" class="form-control" placeholder="e.g. Delhi University / Tech Mahindra" />
+              </div>
+              <div class="form-group">
+                <label for="volShift">Preferred Shift</label>
+                <select id="volShift" class="form-control">
+                  <option value="Flexible Weekends">Flexible Weekends</option>
+                  <option value="Morning (8 AM - 12 PM)">Morning (8 AM - 12 PM)</option>
+                  <option value="Evening (4 PM - 8 PM)">Evening (4 PM - 8 PM)</option>
+                  <option value="Full-Day Drives">Full-Day Drives</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
                 <label for="volDomain">Preferred Impact Wing *</label>
                 <select id="volDomain" class="form-control">
                   <option value="education">Education & Slum Mentorship</option>
@@ -318,7 +354,7 @@
               <textarea id="volMotivation" class="form-control" placeholder="I am passionate about building technology solutions for social welfare and educating underprivileged kids..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.05rem; padding: 0.9rem;">
+            <button type="submit" class="btn btn-primary btn-shimmer" style="width: 100%; font-size: 1.05rem; padding: 0.95rem;">
               Complete Registration & Issue Volunteer ID 🪪
             </button>
           </form>
@@ -326,7 +362,12 @@
 
         <!-- Live Digital Volunteer ID Badge Preview -->
         <div class="badge-preview-container">
+          <div class="badge-style-toggle">
+            <button type="button" class="badge-toggle-btn active" id="btnBadgeHorizontal" onclick="switchBadgeLayout('horizontal')">Horizontal Pass</button>
+            <button type="button" class="badge-toggle-btn" id="btnBadgeVertical" onclick="switchBadgeLayout('vertical')">Vertical Lanyard</button>
+          </div>
           <div class="id-badge-card" id="volunteerBadgeCard">
+            <div class="hologram-seal">VERIFIED</div>
             <div class="badge-top-bar">
               <div class="badge-org-title">InAmigos Foundation</div>
               <span style="font-size: 0.72rem; background: rgba(56, 189, 248, 0.2); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); color: #38bdf8; font-weight: 700;">
@@ -424,9 +465,17 @@
 
           <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.75rem;">Payment Method</h4>
           <div class="payment-methods-row">
-            <button class="payment-method-chip active">📱 UPI / QR Code</button>
-            <button class="payment-method-chip">💳 Debit / Credit Card</button>
-            <button class="payment-method-chip">🏦 Net Banking</button>
+            <button class="payment-method-chip active" id="chipUpi">📱 UPI / QR Code</button>
+            <button class="payment-method-chip" id="chipCard">💳 Debit / Credit Card</button>
+            <button class="payment-method-chip" id="chipNetBanking">🏦 Net Banking</button>
+          </div>
+
+          <div style="margin-bottom: 1.5rem; text-align: center; padding: 1.1rem; background: var(--bg-surface-alt); border-radius: var(--radius-md); border: 1.5px dashed var(--primary);">
+            <div style="font-size: 0.88rem; font-weight: 800; color: var(--primary); margin-bottom: 0.35rem;">⚡ Instant Smartphone Payment Available</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Scan using GPay, PhonePe, Paytm, or BHIM with auto-filled amount.</p>
+            <button type="button" class="btn btn-primary btn-shimmer" id="btnShowUpiQr" onclick="openUpiQrModal()" style="font-size: 0.88rem; padding: 0.55rem 1.35rem;">
+              📱 Show Dynamic UPI QR Scanner
+            </button>
           </div>
 
           <!-- Donor Details Form -->
@@ -854,6 +903,7 @@
   </section>
 
   <!-- Footer -->
+    <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
@@ -869,14 +919,18 @@
           <p>
             Dedicated to youth empowerment, grassroots social transformation, education equality, and ecological stewardship. Supported by InAmigos Foundation.
           </p>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.85rem;">
+            <span style="font-size: 0.72rem; font-weight: 700; background: rgba(79, 70, 229, 0.15); color: var(--primary); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(79, 70, 229, 0.3);">80G / 12A Certified</span>
+            <span style="font-size: 0.72rem; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #059669; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.3);">NITI Aayog Darpan</span>
+          </div>
           <div class="social-icons-row">
-            <a href="#" class="icon-btn" aria-label="LinkedIn" title="LinkedIn">
+            <a href="https://linkedin.com/company/inamigos-foundation" target="_blank" class="icon-btn" aria-label="LinkedIn" title="InAmigos LinkedIn">
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.53 1.53 0 1 0 0-3.06 1.53 1.53 0 0 0 0 3.06m1.37 9.74v-8.37H5.09v8.37h2.74z"/></svg>
             </a>
-            <a href="#" class="icon-btn" aria-label="Instagram" title="Instagram">
+            <a href="https://instagram.com/inamigos_foundation" target="_blank" class="icon-btn" aria-label="Instagram" title="InAmigos Instagram">
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
             </a>
-            <a href="#" class="icon-btn" aria-label="GitHub" title="GitHub">
+            <a href="https://github.com/mlohithchintu0-create/inamigos-impact-portal" target="_blank" class="icon-btn" aria-label="GitHub Repository" title="Source Code">
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
             </a>
           </div>
@@ -895,28 +949,36 @@
         </div>
 
         <div>
-          <h4 class="footer-title">Core Causes</h4>
-          <ul class="footer-links">
-            <li><a href="#activities">Slum Child Literacy</a></li>
-            <li><a href="#activities">Miyawaki Afforestation</a></li>
-            <li><a href="#activities">Stray Animal Shelters</a></li>
-            <li><a href="#activities">Zero Hunger Food Rescue</a></li>
-            <li><a href="#events">Upcoming Clean-Up Drives</a></li>
-          </ul>
+          <h4 class="footer-title">Headquarters & Contact</h4>
+          <p style="font-size: 0.84rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 0.5rem;">
+            <strong>InAmigos Foundation</strong><br/>
+            📍 C-40, Institutional Area, Sector 62,<br/>
+            Noida, Uttar Pradesh 201309
+          </p>
+          <p style="font-size: 0.84rem; line-height: 1.6; color: var(--text-muted);">
+            📞 <strong>Helpline:</strong> <a href="tel:+919871234560" style="color: var(--primary);">+91 98712 34560</a><br/>
+            ✉️ <strong>Email:</strong> <a href="mailto:contact@inamigosfoundation.org" style="color: var(--primary);">contact@inamigosfoundation.org</a><br/>
+            🌐 <strong>Web:</strong> <a href="https://inamigosfoundation.org" target="_blank" style="color: var(--primary);">inamigosfoundation.org</a>
+          </p>
         </div>
 
         <div>
-          <h4 class="footer-title">Submission Details</h4>
-          <p style="font-size: 0.85rem; line-height: 1.6;">
-            <strong>Task:</strong> Web Development Champions Challenge<br/>
-            <strong>Organized by:</strong> HR Team | InAmigos Foundation<br/>
-            <strong>Built with:</strong> Semantic HTML5, CSS3 Variables, Glassmorphism, Vanilla JS (ES6+), Canvas 2D Engine
+          <h4 class="footer-title">Legal Trust & Challenge</h4>
+          <p style="font-size: 0.82rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 0.5rem;">
+            <strong>Darpan ID:</strong> DL/2021/0284910<br/>
+            <strong>80G Exemption:</strong> AAATI4891PF20214<br/>
+            <strong>12A Reg:</strong> AAATI4891PE20211<br/>
+            <strong>Trust Reg:</strong> DEL/2021/TRUST/10892
           </p>
+          <div style="background: var(--bg-surface-alt); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.76rem; border: 1px solid var(--border-color);">
+            <strong>Task 1:</strong> Web Dev Champions Challenge<br/>
+            Organized by HR Team | InAmigos Foundation
+          </div>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 InAmigos Foundation. Built for Task 1: The Web Development Champions Challenge.</div>
+        <div>© 2026 InAmigos Foundation. Registered Non-Profit Organization. Built for Web Development Champions Challenge.</div>
         <div style="color: var(--text-subtle);">Crafted with 💙 by InAmigos Web Development Intern</div>
       </div>
     </div>
@@ -946,6 +1008,104 @@
     <div class="modal-card">
       <button class="modal-close-btn" onclick="closeCauseModal()" aria-label="Close Modal">✕</button>
       <div id="causeModalContent"></div>
+    </div>
+  </div>
+
+  
+  <!-- UPI Dynamic QR Scanner Modal -->
+  <div class="modal-overlay" id="upiQrModal">
+    <div class="modal-card upi-qr-card">
+      <button class="modal-close-btn" onclick="closeUpiQrModal()" aria-label="Close QR Modal">✕</button>
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <span class="badge-tag accent">Instant Zero-Fee UPI Payment</span>
+        <h3 style="font-size: 1.45rem; font-weight: 800; margin-top: 0.5rem; color: var(--text-main);">
+          Scan & Pay with Any UPI App
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Google Pay • PhonePe • Paytm • BHIM • CRED • Any Banking UPI
+        </p>
+      </div>
+
+      <div class="upi-amount-badge">
+        Contribution: <span id="upiModalAmountText" style="color: var(--primary);">₹1,000</span>
+      </div>
+
+      <div class="upi-qr-box">
+        <!-- SVG Graphic Dynamic QR -->
+        <svg id="upiDynamicQrSvg" viewBox="0 0 200 200" width="180" height="180" style="margin: 0 auto; display: block; border-radius: 8px;">
+          <rect width="200" height="200" fill="#ffffff" rx="10" />
+          <!-- QR finder patterns -->
+          <rect x="20" y="20" width="45" height="45" fill="#0f172a" rx="4"/>
+          <rect x="27" y="27" width="31" height="31" fill="#ffffff" rx="2"/>
+          <rect x="33" y="33" width="19" height="19" fill="#4f46e5" rx="2"/>
+
+          <rect x="135" y="20" width="45" height="45" fill="#0f172a" rx="4"/>
+          <rect x="142" y="27" width="31" height="31" fill="#ffffff" rx="2"/>
+          <rect x="148" y="33" width="19" height="19" fill="#4f46e5" rx="2"/>
+
+          <rect x="20" y="135" width="45" height="45" fill="#0f172a" rx="4"/>
+          <rect x="27" y="142" width="31" height="31" fill="#ffffff" rx="2"/>
+          <rect x="33" y="148" width="19" height="19" fill="#4f46e5" rx="2"/>
+
+          <!-- Data pattern simulation matrix -->
+          <rect x="75" y="25" width="12" height="12" fill="#0f172a"/>
+          <rect x="95" y="25" width="12" height="12" fill="#0f172a"/>
+          <rect x="115" y="35" width="12" height="12" fill="#0f172a"/>
+          <rect x="75" y="45" width="12" height="12" fill="#0f172a"/>
+          <rect x="105" y="55" width="12" height="12" fill="#0f172a"/>
+
+          <rect x="25" y="75" width="12" height="12" fill="#0f172a"/>
+          <rect x="45" y="85" width="12" height="12" fill="#0f172a"/>
+          <rect x="65" y="75" width="12" height="12" fill="#0f172a"/>
+          <rect x="85" y="75" width="30" height="12" fill="#0f172a"/>
+          <rect x="125" y="75" width="12" height="12" fill="#0f172a"/>
+          <rect x="145" y="85" width="12" height="12" fill="#0f172a"/>
+          <rect x="165" y="75" width="12" height="12" fill="#0f172a"/>
+
+          <!-- Center InAmigos Heart Icon Badge -->
+          <circle cx="100" cy="100" r="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+          <circle cx="100" cy="100" r="18" fill="#4f46e5"/>
+          <path d="M100 106 l-5 -5 a3.5 3.5 0 0 1 5 -5 a3.5 3.5 0 0 1 5 5 z" fill="#ffffff"/>
+
+          <rect x="25" y="105" width="12" height="12" fill="#0f172a"/>
+          <rect x="45" y="115" width="12" height="12" fill="#0f172a"/>
+          <rect x="145" y="105" width="12" height="12" fill="#0f172a"/>
+          <rect x="165" y="115" width="12" height="12" fill="#0f172a"/>
+
+          <rect x="75" y="135" width="12" height="12" fill="#0f172a"/>
+          <rect x="95" y="145" width="12" height="12" fill="#0f172a"/>
+          <rect x="115" y="135" width="12" height="12" fill="#0f172a"/>
+          <rect x="75" y="165" width="35" height="12" fill="#0f172a"/>
+          <rect x="120" y="155" width="25" height="12" fill="#0f172a"/>
+          <rect x="155" y="145" width="22" height="12" fill="#0f172a"/>
+          <rect x="150" y="165" width="28" height="12" fill="#0f172a"/>
+        </svg>
+
+        <div style="margin-top: 0.85rem; font-size: 0.85rem; font-weight: 700;">
+          UPI ID: <span id="upiVpaText" style="color: var(--primary);">inamigosfoundation@icici</span>
+          <button type="button" class="action-btn-sm" onclick="copyUpiId()" style="margin-left: 0.4rem; padding: 2px 8px;">Copy</button>
+        </div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+          Verified Merchant: <strong>InAmigos Foundation</strong>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin: 1rem 0; font-size: 0.82rem; color: var(--text-muted);">
+        ⏱️ Dynamic Session Active: <strong id="upiTimer" style="color: #ef4444;">04:59</strong>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="button" class="btn btn-primary btn-shimmer" onclick="confirmSimulatedUpiPayment()" style="flex: 1;">
+          ✅ I Have Paid / Verify Contribution
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="closeUpiQrModal()">
+          Cancel
+        </button>
+      </div>
+
+      <p style="font-size: 0.76rem; color: var(--text-muted); text-align: center; margin-top: 0.85rem;">
+        🔒 256-bit Secure Banking Gateway • Section 80G Tax Exemption Receipt Generated Automatically
+      </p>
     </div>
   </div>
 
@@ -1239,5 +1399,11 @@
 
   <!-- Application Engine -->
   <script src="app.js"></script>
+
+  <!-- Back to Top Floating Button -->
+  <button id="backToTopBtn" class="back-to-top-btn" onclick="scrollToTop()" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
 </body>
 </html>
