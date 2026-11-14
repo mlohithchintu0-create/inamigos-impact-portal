@@ -2804,3 +2804,249 @@ textarea.form-control {
     padding: 1.25rem;
   }
 }
+
+
+/* ==========================================================================
+   NEW ENHANCEMENTS: UPI QR Code, Advanced Badge & Visual Polish
+   ========================================================================== */
+
+/* Shimmer Button Effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: rotate(30deg) translateX(-100%);
+  transition: transform 0.75s ease;
+}
+.btn-shimmer:hover::after {
+  transform: rotate(30deg) translateX(100%);
+}
+
+/* Floating Back-to-Top Button */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+.back-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.back-to-top-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--primary-glow);
+}
+
+/* Dynamic UPI QR Code Modal */
+.upi-qr-card {
+  text-align: center;
+  padding: 1rem 0;
+}
+.upi-qr-box {
+  width: 220px;
+  height: 220px;
+  margin: 1.25rem auto;
+  padding: 12px;
+  background: #ffffff;
+  border: 3px solid var(--primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.upi-qr-box svg {
+  width: 100%;
+  height: 100%;
+}
+.upi-apps-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.upi-app-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+/* Enhanced Lanyard / Vertical Badge Toggle */
+.badge-style-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.badge-toggle-btn {
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.badge-toggle-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Vertical Lanyard ID Layout */
+.id-badge-card.vertical-layout {
+  padding: 2.5rem 1.75rem;
+  text-align: center;
+}
+.id-badge-card.vertical-layout .badge-top-bar {
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 0.85rem;
+}
+.id-badge-card.vertical-layout .badge-profile-row {
+  flex-direction: column;
+  text-align: center;
+  gap: 0.85rem;
+}
+.id-badge-card.vertical-layout .badge-avatar-box {
+  width: 86px;
+  height: 86px;
+  font-size: 2.2rem;
+  margin: 0 auto;
+}
+.id-badge-card.vertical-layout .badge-meta-grid {
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+/* Hologram Seal on Badge */
+.hologram-seal {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fde047, #f59e0b, #ec4899, #6366f1);
+  opacity: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 900;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: rotate(-12deg);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Admin Donut Chart */
+.admin-chart-donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.chart-donut {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #4f46e5 0% 35%,
+    #10b981 35% 60%,
+    #f59e0b 60% 80%,
+    #0ea5e9 80% 92%,
+    #ec4899 92% 100%
+  );
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.chart-donut::after {
+  content: '';
+  width: 75px;
+  height: 75px;
+  background: var(--bg-card);
+  border-radius: 50%;
+}
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+}
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Quick Action Buttons in Admin Tables */
+.table-action-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.action-icon-btn {
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.action-icon-btn:hover {
+  background: var(--border-color);
+  color: var(--primary);
+}
+.action-icon-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border-color: var(--danger);
+}
