@@ -389,83 +389,296 @@ function initVolunteerPortal() {
 }
 
 function generateVolunteerBadgeImage(callback) {
+  const badgeCard = document.getElementById('volunteerBadgeCard');
+  const isVertical = badgeCard && badgeCard.classList.contains('vertical-layout');
+
   const canvas = document.createElement('canvas');
-  canvas.width = 600;
-  canvas.height = 380;
-  const ctx = canvas.getContext('2d');
+  const name = document.getElementById('volName')?.value.trim() || 'Aarav Sharma';
+  const domain = document.getElementById('volDomain')?.options[document.getElementById('volDomain').selectedIndex]?.text || 'Education & Mentorship';
+  const city = document.getElementById('volCity')?.value.trim() || 'National Chapter';
+  const memberId = document.getElementById('badgeVolId')?.textContent || 'IAMG-VOL-2026';
+  const blood = document.getElementById('volBloodGroup')?.value || 'O+';
+  const shift = document.getElementById('volShift')?.value || 'Weekend';
 
-  const name = document.getElementById('volName').value.trim() || 'Aarav Sharma';
-  const domain = document.getElementById('volDomain').options[document.getElementById('volDomain').selectedIndex]?.text || 'Education & Mentorship';
-  const city = document.getElementById('volCity').value.trim() || 'National Chapter';
-  const memberId = document.getElementById('badgeVolId').textContent || 'IAMG-VOL-2026';
+  if (isVertical) {
+    // Canvas dimensions for Vertical Lanyard Pass (480 x 740)
+    canvas.width = 480;
+    canvas.height = 740;
+    const ctx = canvas.getContext('2d');
 
-  // Gradient background
-  const grad = ctx.createLinearGradient(0, 0, 600, 380);
-  grad.addColorStop(0, '#1e1b4b');
-  grad.addColorStop(0.6, '#312e81');
-  grad.addColorStop(1, '#0f172a');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 600, 380);
+    // Deep gradient background
+    const bgGrad = ctx.createLinearGradient(0, 0, 480, 740);
+    bgGrad.addColorStop(0, '#0f172a');
+    bgGrad.addColorStop(0.35, '#1e1b4b');
+    bgGrad.addColorStop(0.75, '#312e81');
+    bgGrad.addColorStop(1, '#0f172a');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 480, 740);
 
-  // Borders
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = '#4f46e5';
-  ctx.strokeRect(10, 10, 580, 360);
+    // Outer double border
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#4f46e5';
+    ctx.strokeRect(12, 12, 456, 716);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+    ctx.strokeRect(18, 18, 444, 704);
 
-  // Header Title
-  ctx.font = 'bold 16px sans-serif';
-  ctx.fillStyle = '#38bdf8';
-  ctx.letterSpacing = '2px';
-  ctx.fillText('INAMIGOS FOUNDATION • OFFICIAL VOLUNTEER ID', 40, 50);
-
-  // Avatar Circle
-  ctx.beginPath();
-  ctx.arc(90, 150, 48, 0, 2 * Math.PI);
-  ctx.fillStyle = '#4f46e5';
-  ctx.fill();
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = '#38bdf8';
-  ctx.stroke();
-
-  ctx.font = 'bold 44px sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'center';
-  ctx.fillText(name.charAt(0).toUpperCase(), 90, 165);
-
-  // Name & Domain
-  ctx.textAlign = 'left';
-  ctx.font = 'bold 28px sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(name, 165, 135);
-
-  ctx.font = 'bold 16px sans-serif';
-  ctx.fillStyle = '#34d399';
-  ctx.fillText(`Wing: ${domain}`, 165, 170);
-
-  // Meta Row
-  ctx.font = '14px sans-serif';
-  ctx.fillStyle = '#94a3b8';
-  ctx.fillText(`ID: ${memberId}`, 165, 205);
-  ctx.fillText(`Chapter: ${city}`, 340, 205);
-  ctx.fillText(`Valid Thru: 12/2027`, 165, 235);
-  ctx.fillText(`Status: ACTIVE DEPLOYED`, 340, 235);
-
-  // Simulated Barcode
-  ctx.strokeStyle = '#94a3b8';
-  ctx.lineWidth = 2;
-  for (let x = 40; x < 560; x += (x % 5 === 0 ? 8 : 4)) {
+    // Lanyard punch hole slot at top
+    ctx.fillStyle = '#090d16';
     ctx.beginPath();
-    ctx.moveTo(x, 280);
-    ctx.lineTo(x, 320);
+    ctx.roundRect(190, 24, 100, 14, 7);
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
     ctx.stroke();
+
+    // Top Brand Bar
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.textAlign = 'center';
+    ctx.fillText('INAMIGOS FOUNDATION', 240, 68);
+
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('OFFICIAL DIGITAL VOLUNTEER IDENTITY PASS', 240, 86);
+
+    // Divider line
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(35, 100);
+    ctx.lineTo(445, 100);
+    ctx.stroke();
+
+    // Avatar Circle
+    ctx.beginPath();
+    ctx.arc(240, 180, 58, 0, 2 * Math.PI);
+    const avGrad = ctx.createLinearGradient(180, 120, 300, 240);
+    avGrad.addColorStop(0, '#4f46e5');
+    avGrad.addColorStop(1, '#06b6d4');
+    ctx.fillStyle = avGrad;
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+
+    ctx.font = 'bold 52px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(name.charAt(0).toUpperCase(), 240, 198);
+
+    // Member Name
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(name, 240, 272);
+
+    // Wing Pill Box
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+    ctx.beginPath();
+    ctx.roundRect(60, 288, 360, 32, 16);
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(`Wing: ${domain}`, 240, 310);
+
+    // Details Grid Card
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+    ctx.beginPath();
+    ctx.roundRect(35, 335, 410, 190, 12);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.stroke();
+
+    // Details Rows
+    ctx.textAlign = 'left';
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+
+    const leftX = 55;
+    const midX = 250;
+
+    ctx.fillText('MEMBER CODE', leftX, 365);
+    ctx.font = 'bold 15px monospace';
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillText(memberId, leftX, 385);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('CHAPTER LOCATION', midX, 365);
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillText(city, midX, 385);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('BLOOD GROUP', leftX, 420);
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = '#ef4444';
+    ctx.fillText(blood, leftX, 440);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('PREFERRED SHIFT', midX, 420);
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = '#34d399';
+    ctx.fillText(shift.toUpperCase(), midX, 440);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('VALIDITY PERIOD', leftX, 475);
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillText('2026 - 2027 ACTIVE', leftX, 495);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('VERIFICATION STATUS', midX, 475);
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#34d399';
+    ctx.fillText('VERIFIED PASSED', midX, 495);
+
+    // Hologram Seal Circle
+    ctx.save();
+    ctx.translate(240, 565);
+    const holoGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, 32);
+    holoGrad.addColorStop(0, '#fef08a');
+    holoGrad.addColorStop(0.5, '#38bdf8');
+    holoGrad.addColorStop(1, '#a855f7');
+    ctx.fillStyle = holoGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 30, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('VERIFIED', 0, -3);
+    ctx.font = 'bold 8px sans-serif';
+    ctx.fillText('★ 2026 ★', 0, 10);
+    ctx.restore();
+
+    // Barcode at bottom
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    for (let x = 60; x < 420; x += (x % 6 === 0 ? 9 : 4)) {
+      ctx.beginPath();
+      ctx.moveTo(x, 625);
+      ctx.lineTo(x, 665);
+      ctx.stroke();
+    }
+
+    ctx.font = '11px monospace';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'center';
+    ctx.fillText(`* ${memberId} * INAMIGOS FOUNDATION *`, 240, 688);
+
+    ctx.font = '9px sans-serif';
+    ctx.fillStyle = '#64748b';
+    ctx.fillText('Youth Compassion Ground Change • Darpan Reg: DL/2021/0284910', 240, 706);
+
+    callback(canvas);
+  } else {
+    // Canvas dimensions for Horizontal Pass (620 x 400)
+    canvas.width = 620;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+
+    const grad = ctx.createLinearGradient(0, 0, 620, 400);
+    grad.addColorStop(0, '#1e1b4b');
+    grad.addColorStop(0.6, '#312e81');
+    grad.addColorStop(1, '#0f172a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 620, 400);
+
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#4f46e5';
+    ctx.strokeRect(10, 10, 600, 380);
+
+    // Header Title
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = '#38bdf8';
+    ctx.letterSpacing = '1px';
+    ctx.fillText('INAMIGOS FOUNDATION • OFFICIAL VOLUNTEER ID PASS', 40, 48);
+
+    // Avatar Circle
+    ctx.beginPath();
+    ctx.arc(95, 155, 50, 0, 2 * Math.PI);
+    ctx.fillStyle = '#4f46e5';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.stroke();
+
+    ctx.font = 'bold 46px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(name.charAt(0).toUpperCase(), 95, 172);
+
+    // Name & Domain
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 26px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(name, 170, 135);
+
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillStyle = '#34d399';
+    ctx.fillText(`Wing: ${domain}`, 170, 168);
+
+    // Meta Row
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`ID: ${memberId}`, 170, 202);
+    ctx.fillText(`Chapter: ${city}`, 370, 202);
+    ctx.fillText(`Blood: ${blood}  |  Shift: ${shift.toUpperCase()}`, 170, 230);
+    ctx.fillText(`Status: ACTIVE DEPLOYED`, 370, 230);
+
+    // Hologram Seal Circle
+    ctx.save();
+    ctx.translate(540, 135);
+    const holoGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, 28);
+    holoGrad.addColorStop(0, '#fef08a');
+    holoGrad.addColorStop(0.5, '#38bdf8');
+    holoGrad.addColorStop(1, '#a855f7');
+    ctx.fillStyle = holoGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 26, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('VERIFIED', 0, -2);
+    ctx.font = 'bold 7px sans-serif';
+    ctx.fillText('★ 2026 ★', 0, 8);
+    ctx.restore();
+
+    // Simulated Barcode
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    for (let x = 40; x < 580; x += (x % 5 === 0 ? 8 : 4)) {
+      ctx.beginPath();
+      ctx.moveTo(x, 290);
+      ctx.lineTo(x, 335);
+      ctx.stroke();
+    }
+
+    ctx.font = '12px monospace';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'center';
+    ctx.fillText(`* ${memberId} * VERIFIED YOUTH CHANGEMAKER *`, 310, 360);
+
+    callback(canvas);
   }
-
-  ctx.font = '12px monospace';
-  ctx.fillStyle = '#94a3b8';
-  ctx.textAlign = 'center';
-  ctx.fillText(`* ${memberId} * VERIFIED YOUTH CHANGEMAKER *`, 300, 345);
-
-  callback(canvas);
 }
 
 /* ==========================================================================
@@ -1699,6 +1912,10 @@ window.dbEngine = {
       name: volData.name.trim(),
       email: volData.email.trim(),
       phone: volData.phone.trim(),
+      emergency_phone: (volData.emergency_phone || '').trim(),
+      blood_group: volData.blood_group || '',
+      college: (volData.college || '').trim(),
+      shift: volData.shift || 'weekend',
       city: volData.city.trim(),
       domain: volData.domain || 'Education & Mentorship',
       hours: volData.hours || '4',
@@ -1859,6 +2076,10 @@ function initDatabaseEngine() {
         name: nameInput.value.trim(),
         email: emailInput.value.trim(),
         phone: phoneInput.value.trim(),
+        emergency_phone: document.getElementById('volEmergencyPhone')?.value.trim() || '',
+        blood_group: document.getElementById('volBloodGroup')?.value || '',
+        college: document.getElementById('volCollege')?.value.trim() || '',
+        shift: document.getElementById('volShift')?.value || 'weekend',
         city: cityInput.value.trim(),
         domain: domainName,
         hours: hoursInput.value,
@@ -2129,18 +2350,25 @@ function renderVolunteersTable(data) {
           <div class="table-user-cell">
             <div class="table-avatar">${v.name.charAt(0).toUpperCase()}</div>
             <div>
-              <div class="user-name-bold">${v.name}</div>
-              <div class="user-sub-email">${v.email}</div>
+              <div class="user-name-bold">
+                ${v.name}
+                ${v.blood_group ? `<span style="font-size:0.68rem; font-weight:700; background:rgba(239,68,68,0.15); color:#ef4444; padding:2px 6px; border-radius:4px; margin-left:4px;">${v.blood_group}</span>` : ''}
+              </div>
+              <div class="user-sub-email">${v.email} ${v.college ? `• ${v.college}` : ''}</div>
             </div>
           </div>
         </td>
         <td>
           <div><a href="tel:${v.phone}" style="color: var(--primary); font-weight: 600;">${v.phone}</a></div>
-          <div style="font-size: 0.74rem;"><a href="https://wa.me/${v.phone.replace(/\D/g, '')}" target="_blank" style="color: #25d366;">💬 WhatsApp Chat</a></div>
+          ${v.emergency_phone ? `<div style="font-size:0.72rem; color:var(--text-muted);">Emerg: ${v.emergency_phone}</div>` : ''}
+          <div style="font-size: 0.74rem;"><a href="https://wa.me/${(v.phone||'').replace(/\D/g, '')}" target="_blank" style="color: #25d366;">💬 WhatsApp Chat</a></div>
         </td>
         <td><strong>${v.city}</strong></td>
         <td><span class="wing-badge">${v.domain}</span></td>
-        <td><strong>${v.hours} hrs / week</strong></td>
+        <td>
+          <strong>${v.hours} hrs / wk</strong>
+          ${v.shift ? `<div style="font-size:0.72rem; color:var(--text-muted); text-transform:capitalize;">${v.shift} shift</div>` : ''}
+        </td>
       </tr>
     `;
   }).join('');
@@ -2317,7 +2545,7 @@ window.exportVolunteersToCsv = function() {
     return;
   }
 
-  const headers = ['Member ID', 'Full Name', 'Email Address', 'Phone Number', 'Chapter City', 'Impact Wing', 'Hours Per Week', 'Motivation', 'Registration Timestamp'];
+  const headers = ['Member ID', 'Full Name', 'Email Address', 'Phone Number', 'Emergency Phone', 'Blood Group', 'College / Org', 'Preferred Shift', 'Chapter City', 'Impact Wing', 'Hours Per Week', 'Motivation', 'Registration Timestamp'];
   const rows = cachedVolunteers.map(v => [
     `"${v.id}"`,
     `"${(v.name || '').replace(/"/g, '""')}"`,
@@ -2401,3 +2629,153 @@ window.resetDbConfigToLocal = function() {
 
 window.openAdminModal = openAdminModal;
 window.closeAdminModal = closeAdminModal;
+
+
+/* ==========================================================================
+   ENHANCEMENTS: Badge Layout Toggle, UPI QR Code Modal, Smooth Scroll
+   ========================================================================== */
+
+// Toggle Badge layout between horizontal and vertical lanyard
+window.switchBadgeLayout = function(layout) {
+  const card = document.getElementById('volunteerBadgeCard');
+  const btnH = document.getElementById('btnBadgeHorizontal');
+  const btnV = document.getElementById('btnBadgeVertical');
+  if (!card) return;
+
+  if (layout === 'vertical') {
+    card.classList.add('vertical-layout');
+    if (btnV) btnV.classList.add('active');
+    if (btnH) btnH.classList.remove('active');
+    showToast('Switched to Vertical Lanyard ID Pass style 🪪', 'info');
+  } else {
+    card.classList.remove('vertical-layout');
+    if (btnH) btnH.classList.add('active');
+    if (btnV) btnV.classList.remove('active');
+    showToast('Switched to Horizontal Membership Pass style 💳', 'info');
+  }
+};
+
+// Back to Top Smooth Scroll
+window.scrollToTop = function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backToTopBtn');
+  if (btn) {
+    if (window.scrollY > 350) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  }
+});
+
+// UPI Dynamic QR Code Management
+let upiTimerInterval = null;
+
+window.openUpiQrModal = function() {
+  const modal = document.getElementById('upiQrModal');
+  if (!modal) return;
+
+  // Calculate active donation amount
+  let amt = 1000;
+  const customInput = document.getElementById('customDonationInput');
+  if (customInput && customInput.value && parseInt(customInput.value, 10) > 0) {
+    amt = parseInt(customInput.value, 10);
+  } else {
+    const activeAmtBtn = document.querySelector('.amount-btn.active');
+    if (activeAmtBtn) amt = parseInt(activeAmtBtn.getAttribute('data-amt'), 10) || 1000;
+  }
+
+  const textEl = document.getElementById('upiModalAmountText');
+  if (textEl) textEl.textContent = `₹${Number(amt).toLocaleString()}`;
+
+  // Start 5 min countdown timer
+  let remaining = 300;
+  const timerEl = document.getElementById('upiTimer');
+  if (upiTimerInterval) clearInterval(upiTimerInterval);
+
+  function updateTimer() {
+    const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+    const s = (remaining % 60).toString().padStart(2, '0');
+    if (timerEl) timerEl.textContent = `${m}:${s}`;
+    if (remaining <= 0) {
+      clearInterval(upiTimerInterval);
+      if (timerEl) timerEl.textContent = 'Session Expired';
+    }
+    remaining--;
+  }
+  updateTimer();
+  upiTimerInterval = setInterval(updateTimer, 1000);
+
+  modal.classList.add('open');
+  playChime(520, 'sine', 0.1);
+};
+
+window.closeUpiQrModal = function() {
+  const modal = document.getElementById('upiQrModal');
+  if (modal) modal.classList.remove('open');
+  if (upiTimerInterval) clearInterval(upiTimerInterval);
+};
+
+window.copyUpiId = function() {
+  const vpa = 'inamigosfoundation@icici';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(vpa).then(() => {
+      showToast('UPI ID copied: inamigosfoundation@icici 📋', 'success');
+    }).catch(() => {
+      showToast('UPI ID: inamigosfoundation@icici', 'info');
+    });
+  } else {
+    showToast('UPI ID: inamigosfoundation@icici', 'info');
+  }
+};
+
+window.confirmSimulatedUpiPayment = async function() {
+  let amt = 1000;
+  const customInput = document.getElementById('customDonationInput');
+  if (customInput && customInput.value && parseInt(customInput.value, 10) > 0) {
+    amt = parseInt(customInput.value, 10);
+  } else {
+    const activeAmtBtn = document.querySelector('.amount-btn.active');
+    if (activeAmtBtn) amt = parseInt(activeAmtBtn.getAttribute('data-amt'), 10) || 1000;
+  }
+
+  const nameInput = document.getElementById('donorName');
+  const emailInput = document.getElementById('donorEmail');
+  const panInput = document.getElementById('donorPan');
+
+  const donorName = (nameInput && nameInput.value.trim()) || 'Generous Supporter';
+  const donorEmail = (emailInput && emailInput.value.trim()) || 'donor@inamigosfoundation.org';
+  const donorPan = (panInput && panInput.value.trim().toUpperCase()) || 'ABCDP1234F';
+  const receiptNo = `IAMG-80G-${Math.floor(100000 + Math.random() * 900000)}`;
+
+  // Save to Central Database as VERIFIED payment
+  if (window.dbEngine) {
+    await window.dbEngine.saveDonation({
+      receipt_no: receiptNo,
+      donor_name: donorName,
+      donor_email: donorEmail,
+      pan: donorPan,
+      amount: amt,
+      frequency: 'one-time',
+      payment_method: 'upi_qr',
+      status: 'verified'
+    });
+  }
+
+  closeUpiQrModal();
+  playSuccessSound();
+  showToast(`UPI Payment of ₹${amt.toLocaleString()} verified! 80G Tax Exemption Receipt generated! 🎉`, 'success');
+
+  openDonationReceiptModal({
+    name: donorName,
+    email: donorEmail,
+    pan: donorPan,
+    amount: amt,
+    frequency: 'one-time (UPI Instant)',
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+    receiptNo: receiptNo
+  });
+};
